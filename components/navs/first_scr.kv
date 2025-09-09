@@ -1,0 +1,22 @@
+<Nav_first_scr>:
+    MDBoxLayout:
+        orientation: "vertical"
+        pos_hint: {'center_x': 0.5,'top': .9}
+        size_hint_y:.1
+        md_bg_color: app.theme_cls.primary_color
+        MDLabel:
+            text: "Heading"
+            color:'#ffffff'
+            font_style: 'Caption'
+            font_size: '20sp'
+            halign: 'center'
+            valign: 'center'
+    MDBoxLayout:
+        orientation: "vertical"
+        pos_hint: {'center_x': 0.5,'center_y': 0.4}
+        size_hint_y:.8
+        MDTabs:
+            lock_swiping: True
+            #on_tab_switch: root.current_tab_fun(*args)
+            Tab_company:                   
+    

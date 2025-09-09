@@ -1,0 +1,37 @@
+<Token_page>:
+    MDScreen:
+        md_bg_color:'#3D38A4'
+        Logo_img:
+            id:xt_img
+            size_hint:.3,.3
+            pos_hint:{'center_x':.5,'center_y':.88}
+        MDLabel:
+            text:'Token'
+            halign:'center'
+            color:'white'
+            bold:True
+            font_size:'25sp'
+            pos_hint:{'center_y':.8}
+        MDTextField:
+            id:token_text
+            pos_hint:{'center_x':.5,'center_y':.7}
+            mode:'fill'
+            size_hint_x:.6
+            required: True
+        MDRaisedButton:
+            text:'VERFY OTP'
+            pos_hint:{'center_x':.5,'center_y':.6}
+            on_release:root.verify_token()
+        MDLabel:
+            text:'Contect Admin'
+            halign:'center'
+            color:'white'
+            bold:True
+            font_size:'15sp'
+            pos_hint:{'center_y':.5}
+        Bottom_lbl:
+            pos_hint:{'center_y':.05,'x':.85}
+    Spin:
+        id:spin
+        active:False
+        pos_hint:{'center_x':.5,'center_y':.5}

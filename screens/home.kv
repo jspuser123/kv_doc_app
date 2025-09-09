@@ -1,0 +1,21 @@
+<HomeScreen>:
+    MDTopAppBar:
+        id:toolbar
+        title: "Chat App"
+        pos_hint: {"center_x": .5, "top":1}
+        right_action_items: [["robot-happy", lambda x: x,""]]
+        left_action_items: [["menu", lambda x: nav_drawer.set_state("open")]]
+    MDNavigationLayout:
+        MDScreenManager:
+            id:nav_manager
+            Nav_first_scr:
+                name: "first_scr"
+                nav_manager: nav_manager
+                nav_drawer: nav_drawer
+        MDNavigationDrawer:
+            id: nav_drawer
+            radius: (0, 16, 16, 0)
+            ContentNavigationDrawer:
+                nav_manager: nav_manager
+                nav_drawer: nav_drawer
+        

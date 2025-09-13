@@ -1,0 +1,162 @@
+<Nav_add_scr>:
+    MDBoxLayout:
+        orientation:'horizontal'
+        size_hint:.85,.05
+        pos_hint:{'center_x':.5,'center_y':.85}
+        padding:'5dp'
+        MDLabel:
+            text:"Document Add Page"
+            halign:"center"
+            bold:True
+            color:'#1f2ce6ff'
+            font_size:'20sp'
+    MDBoxLayout:
+        orientation:'horizontal'
+        size_hint:.95,.79
+        pos_hint:{'center_x':.5,'center_y':.43}
+        padding:'5dp'
+        spacing:'5dp'
+        MDCard:
+            orientation:'vertical'
+            padding:'5dp'
+            spacing:'5dp'
+            size_hint_x:None
+            width:'400dp'
+            MDLabel:
+                text:"Document Add"
+                halign:"center"
+                color:'#1f2ce6'
+                font_size:'20sp'
+                size_hint_y:None
+                height:'50dp'
+                pos_hint:{'top':1}
+                bold:True
+            Image:
+                source:'assets/images/ai.png'
+            Line_text:
+                id:name
+                hint_text:'Invoice Name'
+            Line_text:
+                id:document_description
+                hint_text:'Description'
+            Line_text:
+                id:document_io
+                hint_text:'IO'
+            Line_text:
+                id:document_style
+                hint_text:'Style'
+            Line_text:
+                id:document_color
+                hint_text:'Color'
+            Line_text:
+                id:document_pi
+                hint_text:'PI'
+            Line_text:
+                id:po_qty
+                hint_text:'PO Qty'
+            Line_text:
+                id:delivery_qty
+                hint_text:'Delivery Qty'
+            Line_text:
+                id:usd
+                hint_text:'USD'
+            Line_text:
+                id:po_value_usd
+                hint_text:'PO Value USD'
+            Line_text:
+                id:delivery_usd
+                hint_text:'Delivery USD'
+            Line_text:
+                id:excess_stock
+                hint_text:'Excess Stock'
+            Line_text:
+                id:stock_value_usd
+                hint_text:'Stock Value USD'
+            Line_text:
+                id:inr
+                hint_text:'INR'
+            Line_text:
+                id:percent
+                hint_text:'Percent'
+            Line_text:
+                id:document_value
+                hint_text:'Value'
+            
+        MDCard:
+            orientation:'vertical'
+            padding:'5dp'
+            spacing:'5dp'
+            MDCard:
+                padding:'5dp'
+                spacing:'15dp'
+                size_hint_y:None
+                height:'60dp'
+                md_bg_color:'#f3e5f8ff'
+                MDTextField:
+                    id:document_name
+                    mode:"rectangle"
+                    hint_text:'item Name'
+                    height:'50dp'
+                    on_focus: if self.focus:root.menu.open()
+                MDTextField:
+                    id:document_path
+                    mode:"rectangle"
+                    hint_text:'item select'
+                    height:'50dp'
+                    on_focus: if self.focus:root.document_view()
+
+                MDIconButton:
+                    icon:"plus"
+                    theme_text_color:'Custom'
+                    text_color:'#f5ecf7ff'
+                    md_bg_color:'#D72B66'
+                    on_press: root.upload_document()
+            MDCard:
+                MDScrollView:
+                    MDList:
+                        id:list_cards
+                    
+            MDCard:
+                pos_hint:{'center_x':.5}
+                size_hint:None,None
+                width:'232dp'
+                height:'50dp'
+                padding:'5dp'
+                spacing:'5dp'
+                Submit_btn:
+                    id:submit_btn
+                    text:"Save"
+                    on_press: root.save_document()
+                    disabled:False
+                    # opacity:1
+                Update_btn:
+                    id:update_btn
+                    text:"Update"
+                    on_press: root.document_update()
+                    disabled:True
+                    # opacity:0
+                Cancel_btn:
+                    id:cancel_btn
+                    text:"Cancel"
+                    on_press: root.cancel_document()
+                
+        MDCard:
+            orientation:'vertical'
+            Lyt:
+                MDLabel:
+                    text:"Documents List"
+                    halign:"center"
+                    bold:True
+                    color:'#1f2ce6ff'
+                    font_size:'20sp'
+                    size_hint_y:None
+                    height:'50dp'
+                    pos_hint:{'top':1}
+                MDScrollView:
+                    pos_hint:{'center_y':.45}
+                    size_hint_y:.9
+                    MDList:
+                        padding:'5dp'
+                        spacing:'5dp'
+                        id:documents_cards
+                    

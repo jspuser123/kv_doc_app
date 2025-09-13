@@ -1,0 +1,167 @@
+<Tbl_head@MDLabel>
+    size_hint_x:.05
+    halign:'center'
+    color:app.theme_cls.opposite_bg_dark
+    bold:True
+<Tbl_lbl@MDLabel>
+    size_hint_x:.05
+    halign:'center'
+    color:app.theme_cls.opposite_bg_light
+<Tbl_header@MDBoxLayout>
+    id:headerbox
+    size_hint:.988,None
+    height:"50dp"
+    md_bg_color:app.theme_cls.primary_light
+    pos_hint:{'center_x':.5}
+    radius:[5]
+    padding:'5dp'
+    spacing:'5dp'
+    Tbl_head:
+        size_hint_x:.015
+        text:'No'
+    Tbl_head:
+        text:'Image'
+        size_hint_x:None
+        width:51
+    Tbl_head:
+        text:'Department'
+    Tbl_head:
+        text:'Name'
+    Tbl_head:
+        text:'ID'                                        
+    Tbl_head:
+        text:'Designation'
+    Tbl_head:
+        text:'Genter'
+    Tbl_head:
+        text:'Contact'
+    Tbl_head:
+        text:'D.o.j'
+    Tbl_head:
+        text:'City'
+    Tbl_head:
+        text:'Action'
+        size_hint_x:.022
+    Tbl_head:
+        text:'Action'
+        size_hint_x:.022
+<Items_Card>
+    id:root.id_data
+    size_hint:None,None
+    radius:5
+    line_color:'#E6E6E6'
+    ripple_behavior:True
+    ripple_color:'pink'
+    padding:'5dp'
+    spacing:'5dp'
+    Tbl_lbl:
+        text:root.no
+        size_hint_x:.015
+    FitImage:
+        source:root.source
+        size_hint:None,None
+        size:50,50
+        radius:[25]
+        # pos_hint:{'center_y':.5}
+    Tbl_lbl:
+        text:root.dapartment
+    Tbl_lbl:
+        text:root.name
+        font_size:'19sp'
+        bold:True
+    Tbl_lbl:
+        text:root.person_id
+    Tbl_lbl:
+        text:root.designation
+        bold:True
+    Tbl_lbl:
+        text:root.genter
+    Tbl_lbl:
+        text:root.contact
+    Tbl_lbl:
+        text:root.doj
+    Tbl_lbl:
+        text:root.city
+    Update_btn:
+        text: 'Edit'
+        on_release:root.card_press_fun()
+        pos_hint:{'center_y':.5}
+        elevation:0
+    Delete_btn:
+        text: "Delete"
+        on_release:app.add_dialog(root.delete_row_thread)
+        pos_hint:{'center_y':.5}
+        elevation:0
+<Cus_Tbl_tob_wgt>:
+    size_hint:1,None
+    padding:'5dp'
+    height:'50dp'
+    Lyt:
+        MDLabel:
+            text:"Attanace Records"
+            bold:True
+            halign:'left'
+            font_size:'25sp'
+        MDTextField:
+            id:item_search
+            hint_text:"search"
+            mode:'round'
+            #on_text:root.item_search_fun(args)
+            size_hint_x:None
+            width:300
+            pos_hint:{'center_x':.81,'center_y':.5}
+        Search_btn:
+            text:'Search'
+            on_press:root.item_search_fun(item_search.text)
+            pos_hint:{'center_x':.95,'center_y':.5}
+            size_hint_y:.95
+<Cus_tbl>
+    id:items_tbl_box
+    orientation:'vertical'
+    md_bg_color:'white'
+    radius:[10]
+    padding:'5dp'
+    spacing:'3dp'
+    Cus_Tbl_tob_wgt:
+        press_search:root.text_search_fun
+    MDScrollView:
+        do_scroll_x: True
+        do_scroll_y: True
+        MDBoxLayout:
+            orientation:'vertical'
+            size_hint_x:None
+            width:'1700dp'
+            Tbl_header:
+            RecycleView:
+                id:items_tbl_card
+                viewclass:'Items_Card'
+                RecycleBoxLayout:
+                    default_size: None, dp(60)
+                    default_size_hint: 1, None
+                    size_hint_y: None
+                    height: self.minimum_height
+                    orientation: 'vertical'
+                    padding:'10dp'
+                    spacing:'5dp'
+    MDBoxLayout:
+        size_hint:.985,None
+        height:"50dp"
+        pos_hint:{'center_x':.5}
+        radius:[5]
+        MDIconButton:
+            id:page_prev
+            icon:'chevron-left'
+            on_press:root.page_prves()
+            icon_size:'30sp'
+        MDLabel:
+            id:page_status
+            text:''
+            size_hint_x:None
+            width:'350dp'
+            halign:'center'
+            color:'blue'
+        MDIconButton:
+            id:page_next
+            icon:'chevron-right'
+            icon_size:'30sp'
+            on_press:root.page_next()

@@ -1,0 +1,66 @@
+<Verify_page>:
+    MDScreen:
+        md_bg_color:'#3D38A4'
+        Logo_img:
+            id:xt_img
+            size_hint:.2,.2
+            pos_hint:{'center_x':.5,'center_y':.9}
+        MDLabel:
+            id:time_id
+            text:'2.00'
+            halign:'center'
+            color:'white'
+            font_size:'15sp'
+            pos_hint:{'center_y':.8}
+            bold:True
+        MDLabel:
+            text:'Verify Otp'
+            halign:'center'
+            color:'white'
+            bold:True
+            font_size:'25sp'
+            pos_hint:{'center_y':.75}
+        Bottom_lbl:
+            pos_hint:{'center_y':.05,'x':.85}
+        MDCard:
+            orientation:'vertical'
+            size_hint:None,.3
+            width:'300dp'
+            pos_hint:{'center_x':.5,'center_y':.5}
+            Lyt:
+                OTPInput:
+                    id:e1
+                    pos_hint:{'center_x':.1,'center_y':.8}
+                OTPInput:
+                    id:e2
+                    pos_hint:{'center_x':.25,'center_y':.8}
+                OTPInput:
+                    id:e3
+                    pos_hint:{'center_x':.4,'center_y':.8}
+                OTPInput:
+                    id:e4
+                    pos_hint:{'center_x':.55,'center_y':.8}
+                MDLabel:
+                    text:'EMAIL'
+                    pos_hint:{'center_x':1.2,'center_y':.75}
+                MDRaisedButton:
+                    on_release:root.verify_fun()
+                    text:'VERFY OTP'
+                    pos_hint:{'center_x':.5,'center_y':.1}
+
+        MDLabel:
+            text:'Don t recive the code?'
+            halign:'center'
+            color:'white'
+            font_size:'15sp'
+            pos_hint:{'center_y':.3}
+        MDFlatButton:
+            on_release:root.resend_otp()
+            text: "Resend code"
+            theme_text_color: "Custom"
+            text_color: "orange"
+            pos_hint:{'center_x':.59,'center_y':.3}
+    Spin:
+        id:spin
+        active:False
+        pos_hint:{'center_x':.5,'center_y':.5}

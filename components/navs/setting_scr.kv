@@ -1,0 +1,43 @@
+<Nav_setting_scr>:
+    MDBoxLayout:
+        orientation:'horizontal'
+        size_hint:.95,.05
+        pos_hint:{'center_x':.5,'center_y':.87}
+        padding:'5dp'
+        size_hint_y:None
+        height:'50dp'
+        MDLabel:
+            text:"Setting Page"
+            halign:"center"
+            bold:True
+            color:'#1f2ce6ff'
+            font_size:'20sp'
+    MDGridLayout:
+        cols:4
+        rows:2
+        size_hint_y:.8
+        padding:'5dp'
+        spacing:'5dp'
+        pos_hint:{'center_x':.5,'center_y':.7}
+        adaptive_height:True
+        MDLabel:
+            text:"PATH"
+            color:'#1f2ce6'
+            font_size:'20sp'
+            bold:True
+            size_hint:.2,.1
+            halign:'center'
+        MDTextField:
+            id:path_id
+            mode:"rectangle"
+            hint_text:'server path'
+            helper_text:"//server/Any_you_path/path"
+            height:'50dp'
+        Submit_btn:
+            text:"Save"
+            on_press:root.save_path()
+        Cancel_btn:
+            text:"Delete"
+            on_press:root.delete_path()
+     
+        

@@ -1,0 +1,101 @@
+<HomeScreen>:
+    MDTopAppBar:
+        id:toolbar
+        title: "Dashboard"
+        size_hint:.78,.1
+        elevation: 3
+        pos_hint: {'center_x':.61,"top": 1}
+        right_action_items: [["robot-happy", lambda x: x,""]]
+        left_action_items: [["menu", lambda x: x]]
+    MDNavigationLayout:
+        MDScreenManager:
+            pos_hint:{'center_x':.59,'center_y':.5}
+            size_hint_x:.779
+            id:nav_manager
+            Nav_first_scr:
+                name: "first_scr"
+                nav_manager: nav_manager
+            Nav_add_scr:
+                name: "add_scr"
+                nav_manager: nav_manager
+            Nav_view_scr:
+                name: "view_scr"
+                nav_manager: nav_manager
+            Nav_report_scr:
+                name: "report_scr"
+                nav_manager: nav_manager
+            Nav_setting_scr:
+                name: "setting_scr"
+                nav_manager: nav_manager
+
+    MDNavigationDrawer:
+        id: nav_drawer
+        nav_manager: nav_manager 
+        radius: (0, 16, 16, 0)
+            # ContentNavigationDrawer:
+            #     nav_manager: nav_manager
+            #     nav_drawer: nav_drawer
+    MDBoxLayout:
+        orientation:'vertical'
+        size_hint:.22,1
+        radius:[5]
+        md_bg_color:'#181824'
+        Lyt:
+            size_hint_y:.4
+            Logo_img:
+                pos_hint:{'center_x':.5,'center_y':.6}
+                size_hint:.9,.8
+                # height:'300dp'
+                # width:'300dp'
+            MDLabel:
+                text:'Menu'
+                color:'white'
+                pos_hint:{'x':.05,'center_y':.1}
+        MDScrollView:
+            MDList:
+                padding:'5dp'
+                spacing:'5dp'
+                Nav_list:
+                    text:'Home'
+                    on_release:
+                        nav_manager.current = "first_scr"
+                        nav_manager.transition.direction = "right"
+                    IconLeftWidget:
+                        icon: "home"
+                        theme_text_color:'Custom'
+                        text_color:'blue'
+                Nav_list:
+                    text:'Report'
+                    on_release:
+                        nav_manager.current = "report_scr"
+                        nav_manager.transition.direction = "right"
+                    IconLeftWidget:
+                        icon: "file"
+                        theme_text_color:'Custom'
+                        text_color:'blue'
+                Nav_list:
+                    text:'Settings'
+                    on_release:
+                        nav_manager.current = "setting_scr"
+                        nav_manager.transition.direction = "right"
+                    IconLeftWidget:
+                        icon: "cog"
+                        theme_text_color:'Custom'
+                        text_color:'blue'
+                
+                Nav_list:
+                    text:'Logout'
+                    on_release:
+                        app.root.current='login_scr'
+                        app.root.transition.direction = "up"
+                    IconLeftWidget:
+                        theme_text_color:'Custom'
+                        text_color:'blue'
+                        icon: "logout"
+                Nav_list:
+                    text:'Exit'
+                    on_release:app.exit_fun()
+                    IconLeftWidget:
+                        icon: "exit-to-app"
+                        theme_text_color:'Custom'
+                        text_color:'blue'

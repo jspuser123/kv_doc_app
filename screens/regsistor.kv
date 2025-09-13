@@ -1,0 +1,125 @@
+<Regsistor_page>:
+    MDScreen:
+        md_bg_color:'#3D38A4'
+        Logo_img:
+            pos_hint:{'center_x':.85,'center_y':.85}
+            size_hint:.3,.3
+        Top_lbl:
+            pos_hint:{'x':.75,'center_y':.65}
+        Login_img:
+            pos_hint:{'center_x':.7,'center_y':.37}
+            size_hint:.5,.5
+    MDCard:
+        orientation:'vertical'
+        size_hint:None,1
+        pos_hint:{'left':.1}
+        width:'500dp'
+        radius:[0,20,20,5]
+        Lyt:
+            MDLabel:
+                text:'Welcome to Register'
+                halign:'center'
+                pos_hint:{'center_y':.95}
+                bold:True
+                font_style:'H5'
+                color:'#3D38A4'
+            MDTextField:
+                id:username
+                hint_text: 'username'
+                mode:'round'
+                pos_hint:{'center_x':.5,'center_y':.85}
+                size_hint_x:.9
+                required: True
+                write_tab:False
+                icon_left:'account'
+            MDTextField:
+                id:pass1
+                hint_text:'password'
+                mode:'round'
+                pos_hint:{'center_x':.5,'center_y':.75}
+                size_hint_x:.9
+                required: True
+                write_tab:False
+                icon_left:'key-variant'
+                password:True
+            MDTextField:
+                id:pass2
+                hint_text: 're-enter-password'
+                mode:'round'
+                pos_hint:{'center_x':.5,'center_y':.65}
+                size_hint_x:.9
+                required: True
+                write_tab:False
+                icon_left:'key-variant'
+                password:True
+            MDTextField:
+                id:phone
+                hint_text: 'phone'
+                mode:'round'
+                pos_hint:{'center_x':.5,'center_y':.54}
+                size_hint_x:.9
+                required: True
+                write_tab:False
+                icon_left:'phone'
+                max_text_length: 10
+            MDTextField:
+                id:email
+                hint_text: 'email'
+                mode:'round'
+                pos_hint:{'center_x':.5,'center_y':.43}
+                size_hint_x:.9
+                required: True
+                write_tab:False
+                icon_left:'mail'
+                validator: "email"
+            MDTextField:
+                id:company
+                hint_text: 'company'
+                mode:'round'
+                pos_hint:{'center_x':.5,'center_y':.33}
+                size_hint_x:.9
+                required: True
+                write_tab:False
+                icon_left:'domain'
+                max_text_length: 50
+            MDFillRoundFlatButton:
+                text:'submit'
+                text_color: "white"
+                line_color: "skyblue"
+                md_bg_color:'#3D38A4'
+                size_hint:.5,None
+                font_style:'Button'
+                pos_hint:{'center_x':.5,'center_y':.23}
+                on_release:root.reg_fun()
+            MDLabel:
+                text:'Already have an account?'
+                halign:'center'
+                pos_hint:{'center_y':.15}
+            MDFlatButton:
+                text: "Login"
+                theme_text_color: "Custom"
+                text_color: "orange"
+                pos_hint:{'center_x':.73,'center_y':.15}
+                on_release:
+                    app.root.current='login_scr'
+                    app.root.transition.direction = "down"
+            MDIconButton:
+                icon: "eye-off"
+                pos_hint:{'center_y':.75,'center_x':.89}
+                theme_text_color: "Hint"
+                on_release:
+                    self.icon = "eye" if self.icon == "eye-off" else "eye-off"
+                    pass1.password = False if pass1.password is True else True
+            MDIconButton:
+                icon: "eye-off"
+                pos_hint:{'center_y':.65,'center_x':.89}
+                theme_text_color: "Hint"
+                on_release:
+                    self.icon = "eye" if self.icon == "eye-off" else "eye-off"
+                    pass2.password = False if pass2.password is True else True
+            Bottom_lbl:
+                pos_hint:{'center_y':.03,'x':.05}
+    Spin:
+        id:spin
+        active:False
+        pos_hint:{'center_x':.5,'center_y':.5}

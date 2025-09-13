@@ -1,0 +1,265 @@
+<ProfileImage@Image>:   
+    source: "assets/images/ai.png"
+    radius:[20]
+<Logo_img@Image>:
+    source: 'assets/images/profile.png'
+<Login_img@Image>:
+    source: 'assets/images/company.png'
+<Style_img@Image>:
+    source: 'assets/images/profile.png'
+    size_hint:.9,.9
+<Top_lbl@MDLabel>:
+    text:'Softwere Name'
+    font_size:'40sp'
+    color:'white'
+    font_name: 'assets/fonts/Pacifico.ttf'
+
+<Bottom_lbl@MDLabel>:
+    text:'Powered By TechTransformers'
+    color:'#3D38A4'
+    font_name: 'assets/fonts/Pacifico.ttf'
+<Lbl1>:
+    font_style: "Body1"
+    size_hint_y: None
+    height: self.texture_size[1]
+    padding: "10dp"
+    allow_selection: True
+    canvas.before:
+        Color:
+            rgba:get_color_from_hex("#46A2AA")
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [(10, 10), (0, 0), (10, 10), (0, 0)]
+<Doc_lbl@MDLabel>:
+    size_hint_y: None
+    height: self.texture_size[1]
+    bold:True
+    color:app.theme_cls.opposite_bg_light
+<Doc_icn@MDIcon>:
+    font_size:'25sp'
+    bold:True
+    color:app.theme_cls.opposite_bg_light
+    pos_hint:{'center_y':.5}
+<Submit_btn@MDFillRoundFlatButton>:
+    md_bg_color:'blue'
+    elevation:0
+<Update_btn@MDFillRoundFlatButton>
+    md_bg_color:'orange'
+    elevation:0
+<Delete_btn@MDFillRoundFlatButton>
+    md_bg_color:"red"
+    elevation:0
+<Export_btn@MDFillRoundFlatButton>
+    md_bg_color:'green'
+    elevation:0
+<Cancel_btn@MDFillRoundFlatButton>
+    md_bg_color:'grey'
+    elevation:0
+<OTPInput@MDTextField>:
+    size_hint_x: None
+    width: dp(40)
+    max_text_length: 1
+    required: True
+    write_tab:False
+    input_type: 'number'
+    font_size: '24sp'
+    halign: 'center'
+    input_filter: "int"
+<Textboxcustom>:
+    md_bg_color:(200/255, 191/255, 206/255,1)
+    radius: [22, 22, 22, 22]
+    TextInput:
+        id:get_data
+        hint_text: "text"
+        pos_hint: {"center_x": .5, "center_y": .5}
+        size_hint:1,.8
+        height:'30dp'
+        font_size: '18sp'
+        cursor_color: 1, 170/255, 25/255, 1
+        background_color:0,0,0,0
+        foreground_color: 1, 170/255, 25/255, 1
+        cursor_width: '2sp'
+        padding:10
+<Spin@MDSpinner>:
+    size_hint: None, None
+    size: dp(56), dp(56)
+    color:app.theme_cls.primary_dark
+    palette:
+        [0.28627450980392155, 0.8431372549019608, 0.596078431372549, 1],[0.3568627450980392, 0.3215686274509804, 0.8666666666666667, 1],[0.8862745098039215, 0.36470588235294116, 0.592156862745098, 1],[0.8784313725490196, 0.9058823529411765, 0.40784313725490196, 1],
+<Nav_list>
+    text: ""
+    theme_text_color:'Custom'
+    text_color:'white'
+    bg_color:'#181824'
+    radius:[10]
+    focus_color: '#3D38A4'
+    IconRightWidget:
+        id:right_i
+        icon: "play"
+        theme_text_color:'Custom'
+        text_color:'#181824'
+
+       
+<DialogContent>:
+    orientation: "vertical"
+    spacing: "12dp"
+    size_hint_y:None
+    height: "420dp"
+    MDTextField:
+        id: name
+        hint_text: "Name"
+
+<RightCheckbox>:
+    size_hint: None, None
+    size: dp(56), dp(56)
+<List_item>:
+    text: ""
+    ImageLeftWidget:
+        source: "assets/images/chat.jpg"
+<About_card>:
+    spacing: "10dp"
+    size_hint_y: None
+    height: "130dp"
+    elevation:2
+    MDIcon:
+        icon:root.source
+        theme_text_color: "Custom"
+        text_color: root.icn_color
+        font_size: "22sp"
+        pos_hint:{'center_y':.5}
+    MDLabel:
+        text:root.text
+        font_style: "Body1"
+        halign: "left"
+        valign: "center"
+        color:root.text_color
+        size_hint_y:.1
+        pos_hint:{'center_y':.5}
+<Lyt@MDRelativeLayout>:
+
+<ClientsTable>
+    orientation: "vertical"
+    size_hint_y:.7
+    padding:'5dp'
+
+<SelectCardRecycleView>:
+    viewclass:'Items_Card'
+    RecycleGridLayout:
+        cols:3
+        default_size: dp(430), dp(250)
+        default_size_hint: None, None
+        size_hint_y: None
+        height: self.minimum_height
+        # multiselect: True
+        # touch_multiselect: True
+        padding:'10dp'
+        spacing:'20dp'
+<Items_Card>:
+    id:root.id_data
+    size_hint:None,None
+    size:dp(460),dp(250)
+    radius:10
+    md_bg_color:'#f3edf5ff'
+    padding:'10dp'
+    spacing:'10dp'
+    canvas.before:
+        Color:
+            rgba: (0, 0, 0, 0.2)  # Shadow color
+        RoundedRectangle:
+            size: self.size
+            pos: (self.x + 5, self.y + 5)  # Offset for shadow
+            radius:[(10, 10), (10, 10), (10, 10), (10, 10)]
+    Lyt:
+        MDLabel:
+            text:root.name
+            font_size:'26sp'
+            halign:'left'
+            bold:True
+            pos_hint:{'center_y':.9}
+        MDLabel:
+            text:root.desc
+            font_size:'21sp'
+            color: 'grey'
+            halign:'left'
+            bold:True
+            pos_hint:{'center_y':.75}
+        MDLabel:
+            text:root.io
+            font_size:'16sp'
+            color: app.theme_cls.opposite_bg_light
+            bold:True
+            halign:'left'
+            pos_hint:{'center_y':.5}
+        MDLabel:
+            text:root.style
+            font_size:'17sp'
+            color:'#2254B6'
+            bold:True
+            halign:'center'
+            pos_hint:{'center_y':.5}
+        MDLabel:
+            text:root.color
+            font_size:'17sp'
+            color:'#2254B6'
+            bold:True
+            halign:'center'
+            pos_hint:{'center_y':.35}
+        MDLabel:
+            text:root.pi
+            font_size:'17sp'
+            color:'#2254B6'
+            bold:True
+            halign:'left'
+            pos_hint:{'center_y':.35}
+        MDLabel:
+            text:root.date
+            font_size:'17sp'
+            color:'#2254B6'
+            bold:True
+            halign:'right'
+            pos_hint:{'center_y':.5}
+        MDLabel:
+            text:root.value
+            font_size:'17sp'
+            color:'#2254B6'
+            bold:True
+            halign:'right'
+            pos_hint:{'center_y':.35}
+        Update_btn:
+            text:"Update"
+            pos_hint:{'center_x':.5,'center_y':.1}
+            on_press:root.update_card_item()
+            opacity:root.update_opacity
+        Delete_btn:
+            text:"Delete"
+            pos_hint:{'center_x':.7,'center_y':.1}
+            on_press:root.delete_card_item()
+            opacity:root.del_opacity
+        Export_btn:
+            text:"More"
+            pos_hint:{'center_x':.9,'center_y':.1}
+            on_press:root.view_card_item()
+            opacity:root.view_opacity
+<Btn@Button>:
+    background_color: 0.2, 0.4, 1, 1
+    color: 1, 1, 1, 1 
+    size_hint_y:None
+    height:'36dp'
+<Line_text>
+    text_in:text_in
+    hint_text:''
+    disabled:False
+    radius:[8]
+    md_bg_color:'#f3edf5ff'
+    padding:'3dp'
+    size_hint_y:None
+    height:'35dp'
+    focus: text_in.focus
+    #text_call:root.call_text(root.in_text)
+    TextInput:
+        id:text_in
+        background_color: 0, 0, 0, 0
+        hint_text: self.parent.hint_text
+        write_tab:False
+        disabled:self.parent.disabled

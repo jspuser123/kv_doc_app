@@ -63,7 +63,7 @@ class path_server(Base):
     description=Column(String(255))
 
 
-DATABASE_URL ="sqlite:///../data.db"
+DATABASE_URL ="sqlite:///base/data.db"
 #"sqlite:///../data.db"
 #DATABASE_URL = f"mysql+mysqlconnector://{username}:{passwd}@{host}:{port}/{database}"
 #f'mssql+pyodbc://{username}:{password}@{server}/{database}?driver={driver}'

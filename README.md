@@ -22,3 +22,14 @@ This is a simple document management application built using Kivy and KivyMD.
 
 ## Contributing
 Contributions are welcome!
+
+##exe build success
+
+pyinstaller -c --onedir --add-data "D:\it\project\kv_doc_app\app\assets\images:assets\images" --add-data "D:\it\project\kv_doc_app\app\assets\fonts:assets\fonts" --add-data "D:\it\project\kv_doc_app\app\components:components" --add-data "D:\it\project\kv_doc_app\app\screens:screens" --add-data "D:\it\project\kv_doc_app\app\models:models" --add-data "D:\it\project\kv_doc_app\app\utility:utility" main.py
+
+pyinstaller -w --onefile --add-data "D:\it\project\kv_doc_app\app\assets\images:assets\images" --add-data "D:\it\project\kv_doc_app\app\assets\fonts:assets\fonts" --add-data "D:\it\project\kv_doc_app\app\components:components" --add-data "D:\it\project\kv_doc_app\app\screens:screens" --add-data "D:\it\project\kv_doc_app\app\models:models" --add-data "D:\it\project\kv_doc_app\app\utility:utility" main.py
+
+![image](\\assets\images\doc\demo1.png)
+![image](\\assets\images\doc\demo2.png)
+![image](\\assets\images\doc\demo3.png)
+![image](\\assets\images\doc\demo4.png)

@@ -11,13 +11,13 @@ class Nav_first_scr(Screen):
         self.nav_manager = ObjectProperty()
         self.from_date=None
         self.to_date=None
+        self.page_size = 100
+        self.current_page = 0
+        self.menu_page_size = 50
+        self.menu_current_page = 0
     def on_enter(self, *args):
         Clock.schedule_once(self.load, .05)
         Clock.schedule_once(self.document_list, 0.8)
-        Clock.schedule_once(self.io_menu_fun, 1)
-        Clock.schedule_once(self.stye_menu_fun, 1.1)
-        Clock.schedule_once(self.color_menu_fun, 1.2)
-        Clock.schedule_once(self.pi_menu_fun, 1.3)
     def on_leave(self, *args):
         if self.app.admob:
             self.app.admob.hide_banner() # hide banner
@@ -47,141 +47,177 @@ class Nav_first_scr(Screen):
             'update_opacity':1,
 
             } for x in self.document_data]
-        self.ids.list_card.data=self.data
+        #self.ids.list_card.data=self.data
+        Clock.schedule_once(self.update_page,0.2)
     def document_view(self,*args):
         x=args[0]
         self.nav_manager.current = "view_scr"
         self.nav_manager.get_screen('view_scr').document_view(x)
     def document_delete(self,*args):
+        if self.app.alert_dialog:
+            self.app.on_alret_dismiss()
         x=args[0]
-        with get_session() as session:
-            doc = session.query(document).get(x.id_data)
-            for child in doc.document_child:
-                if os.path.exists(child.file):
-                    os.remove(child.file)
-            
-            session.delete(doc)
-            session.commit()
-        self.ids.list_card.data.remove({
-            'id_data':x.id_data,
-            'name':x.name,
-            'desc':x.desc,
-            'io':x.io,
-            'style':x.style,
-            'color':x.color,
-            'pi':x.pi,
-            'value':'',
-            'date':x.date,
-            'delete_card':self.document_delete,
-            'view_card':self.document_view,
-            'update_card':self.document_update,
-            'view_opacity':1,
-            'del_opacity':1,
-            'update_opacity':1,
-            })
+        try:
+            with get_session() as session:
+                doc = session.query(document).get(x.id_data)
+                for child in doc.document_child:
+                    if os.path.exists(child.file):
+                        os.remove(child.file)
+                
+                session.delete(doc)
+                session.commit()
+            self.data.remove({
+                'id_data':x.id_data,
+                'name':x.name,
+                'desc':x.desc,
+                'io':x.io,
+                'style':x.style,
+                'color':x.color,
+                'pi':x.pi,
+                'value':'',
+                'date':x.date,
+                'delete_card':self.document_delete,
+                'view_card':self.document_view,
+                'update_card':self.document_update,
+                'view_opacity':1,
+                'del_opacity':1,
+                'update_opacity':1,
+                })
+        except Exception as e:
+            Clock.schedule_once(partial(self.app.notify,f'Error: {e}'),1)
+            return
         # self.ids.list_card.data.pop()
-        
+        Clock.schedule_once(self.update_page,0.5)
+        Clock.schedule_once(partial(self.app.notify,f'Document {x.name} deleted'),1)
     def document_update(self,*args):
         x=args[0]
+        if self.app.alert_dialog:
+            self.app.on_alret_dismiss()
         self.nav_manager.current = "add_scr"
         self.nav_manager.get_screen('add_scr').document_update_data(x)
+
+    ######table function pagenation#######
+    def update_page(self,*args):
+        start = self.current_page * self.page_size
+        end = start + self.page_size
+        if args[0]=='search':
+            self.ids.list_card.data=args[1]
+            total_pages = (len(args[1]) + self.page_size - 1) // self.page_size
+            self.ids.card_page_status.text = f"Results: {len(args[1])}"
+        else:
+            self.ids.list_card.data = self.data[start:end]
+            total_pages = (len(self.data) + self.page_size - 1) // self.page_size
+            self.ids.card_page_status.text = f"{start + 1} - {min(end, len(self.data))} OF {len(self.data)} (Page {self.current_page + 1} / {total_pages})"
+
+    def page_prves(self,*args):
+        if self.current_page > 0:
+            self.current_page -= 1
+            self.update_page()
+
+    def page_next(self,*args):
+        total_pages = (len(self.data) + self.page_size - 1) // self.page_size
+        if self.current_page < total_pages - 1:
+            self.current_page += 1
+            self.update_page()
+    ######table function pagenation#######
     def from_date_fun(self,*args):
         self.ids.from_date_id.text=str(args[1])
         self.from_date = args[1]
     def to_date_fun(self,*args):
         self.ids.to_date_id.text=str(args[1])
         self.to_date = args[1]
-    def io_menu_fun(self,*args):
-        menu_items = [
-            {
-                "text": f"{i.io}",
-                "viewclass": "OneLineListItem",
-                "on_release": lambda x=i.io: self.io_callback(x),
-            } for i in self.document_data
-        ]
-        self.io_menu = MDDropdownMenu(
-            caller=self.ids.io_id,
-            items=menu_items,
-            position="bottom",
-            width_mult=3,
-            background_color=self.app.theme_cls.primary_light,
-            hor_growth="left",
-        )
-    def text_change(self,*args):####this change fun filter
-        value=args[0]
-        if not value:
-            return
-        # filtered_items = [
-        #     {
-        #         "text": f"Io: {i.io}",
-        #         "viewclass": "OneLineListItem",
-        #         "on_release": lambda x=i.io: self.io_callback(x),
-        #     } for i in  self.document_data if value.lower() in i.io.lower()
-        # ]
-        # self.io_menu.items = filtered_items
-        # self.io_menu.open()
+    ######menu pagenation#######
+    def menu_update_page(self,*args):
+        start = self.menu_current_page * self.menu_page_size
+        end = start + self.menu_page_size
+        if args[0]=='search':
+            self.app.show_menu.content_cls.data=args[1]
+            self.app.show_menu.content_cls.status= f"Result: {len(args[1])}"
+        else:
+            self.app.show_menu.content_cls.data= args[1][start:end]
+            self.app.show_menu.content_cls.status= f"{start + 1} - {min(end, len(args[1]))} OF {len(args[1])}"
+    def menu_page_prve(self,*args):
+        if self.menu_current_page > 0:
+            self.menu_current_page -= 1
+            self.menu_update_page('prev')
+    def menu_page_next(self,*args):
+        total_pages = (len(self.data) + self.menu_page_size - 1) // self.menu_page_size
+        if self.menu_current_page < total_pages - 1:
+            self.menu_current_page += 1
+            self.menu_update_page('next')
+    ######menu pagenation#######
 
-    def io_callback(self, text_item):
-        self.ids.io_id.text_in.text=text_item
-        self.io_menu.dismiss()
-    def stye_menu_fun(self,*args):
-        menu_items = [
-            {
-                "text": f"{i.style}",
-                "viewclass": "OneLineListItem",
-                "on_release": lambda x=i.style: self.stye_callback(x),
-            } for i in self.document_data
-        ]
-        self.style_menu = MDDropdownMenu(
-            caller=self.ids.style_id,
-            items=menu_items,
-            position="bottom",
-            width_mult=3,
-            background_color=self.app.theme_cls.primary_light,
-            hor_growth="right",
-        )
-    def stye_callback(self, text_item):
-        self.ids.style_id.text_in.text=text_item
-        self.style_menu.dismiss()
-    def color_menu_fun(self,*args):
-        menu_items = [
-            {
-                "text": f"{i.color}",
-                "viewclass": "OneLineListItem",
-                "on_release": lambda x=i.color: self.color_callback(x),
-            } for i in self.document_data
-        ]
-        self.color_menu = MDDropdownMenu(
-            caller=self.ids.color_id,
-            items=menu_items,
-            position="bottom",
-            width_mult=3,
-            background_color=self.app.theme_cls.primary_light,
-            hor_growth="right",
-        )
-    def color_callback(self, text_item):
-        self.ids.color_id.text_in.text=text_item
-        self.color_menu.dismiss()
-    def pi_menu_fun(self,*args):
-        menu_items = [
-            {
-                "text": f"{i.pi}",
-                "viewclass": "OneLineListItem",
-                "on_release": lambda x=i.pi: self.pi_callback(x),
-            } for i in self.document_data
-        ]
-        self.pi_menu = MDDropdownMenu(
-            caller=self.ids.pi_id,
-            items=menu_items,
-            position="bottom",
-            width_mult=3,
-            background_color=self.app.theme_cls.primary_light,
-            hor_growth="right",
-        )
-    def pi_callback(self, text_item):
-        self.ids.pi_id.text_in.text=text_item
-        self.pi_menu.dismiss()
-   
+    def load_menu_fun(self,*args):
+        if args[0]=='io':
+            data=[{'text':x.io,'on_press':partial(self.load_item_text_box,'io',x.io)} for x in self.document_data]
+            Clock.schedule_once(partial(self.menu_update_page,'io',data),0.5)
+        elif args[0]=='style':
+            data=[{'text':x.style,'on_press':partial(self.load_item_text_box,'style',x.style)} for x in self.document_data]
+            Clock.schedule_once(partial(self.menu_update_page,'style',data),0.5)
+        elif args[0]=='color':
+            data=[{'text':x.color,'on_press':partial(self.load_item_text_box,'color',x.color)} for x in self.document_data]
+            Clock.schedule_once(partial(self.menu_update_page,'color',data),0.5) 
+        elif args[0]=='pi':
+            data=[{'text':x.pi,'on_press':partial(self.load_item_text_box,'pi',x.pi)} for x in self.document_data]
+            Clock.schedule_once(partial(self.menu_update_page,'pi',data),0.5)
+    def load_item_text_box(self,*args):
+        if args[0]=='io':
+            self.ids.io_id.text_in.text=args[1]
+        elif args[0]=='style':
+            self.ids.style_id.text_in.text=args[1]
+        elif args[0]=='color':
+            self.ids.color_id.text_in.text=args[1]
+        elif args[0]=='pi':
+            self.ids.pi_id.text_in.text=args[1]
+        self.app.show_menu_on_dismiss()
+    def on_submit_menu(self,*args):
+        if self.app.show_menu.title in 'IO List':
+            self.ids.io_id.text_in.text=self.app.show_menu.content_cls.ids['search_text'].text
+        elif self.app.show_menu.title in 'style List':
+            self.ids.style_id.text_in.text=self.app.show_menu.content_cls.ids['search_text'].text
+        elif self.app.show_menu.title in 'color List':
+            self.ids.color_id.text_in.text=self.app.show_menu.content_cls.ids['search_text'].text
+        elif self.app.show_menu.title in 'pi List':
+            self.ids.pi_id.text_in.text=self.app.show_menu.content_cls.ids['search_text'].text  
+        self.app.show_menu_on_dismiss()
+    def search_io_fun(self,*args):
+        self.app.show_menu.content_cls.load_spinner=True
+        self.txt=args[0]
+        data=[{'text':x.io,'on_press':partial(self.load_item_text_box,'io',x.io)} for x in self.document_data if x.io.lower().find(self.txt.lower())!=-1]
+        if not self.txt:
+            Clock.schedule_once(partial(self.menu_update_page,'no data',data),0.5)
+            self.app.show_menu.content_cls.load_spinner=False
+            return
+        Clock.schedule_once(partial(self.menu_update_page,'search',data),0.5)
+    def search_style_fun(self,*args):
+        self.app.show_menu.content_cls.load_spinner=True
+        self.txt=args[0]
+        data=[{'text':x.style,'on_press':partial(self.load_item_text_box,'style',x.style)} for x in self.document_data if x.style.lower().find(self.txt.lower())!=-1]
+        if not self.txt:
+            Clock.schedule_once(partial(self.menu_update_page,'no data',data),0.5)
+            self.app.show_menu.content_cls.load_spinner=False
+            return
+        Clock.schedule_once(partial(self.menu_update_page,'search',data),0.5)
+    def search_color_fun(self,*args):
+        self.app.show_menu.content_cls.load_spinner=True
+        self.txt=args[0]
+        data=[{'text':x.color,'on_press':partial(self.load_item_text_box,'color',x.color)} for x in self.document_data if x.color.lower().find(self.txt.lower())!=-1]
+        if not self.txt:
+            Clock.schedule_once(partial(self.menu_update_page,'no data',data),0.5)
+            self.app.show_menu.content_cls.load_spinner=False
+            return
+        Clock.schedule_once(partial(self.menu_update_page,'search',data),0.5)
+    def search_pi_fun(self,*args):
+        self.app.show_menu.content_cls.load_spinner=True
+        self.txt=args[0]
+        data=[{'text':x.pi,'on_press':partial(self.load_item_text_box,'pi',x.pi)} for x in self.document_data if x.pi.lower().find(self.txt.lower())!=-1]
+        if not self.txt:
+            Clock.schedule_once(partial(self.menu_update_page,'no data',data),0.5)
+            self.app.show_menu.content_cls.load_spinner=False
+            return
+        Clock.schedule_once(partial(self.menu_update_page,'search',data),0.5)
+
+    ############search function############
     def search_fun(self, *args):
         search = self.ids.search_id.text_in.text
         io = self.ids.io_id.text_in.text
@@ -197,7 +233,7 @@ class Nav_first_scr(Screen):
             'search': search
         }
         search_data = [i for i in self.data if self.apply_filters(i, filters)]
-        self.ids.list_card.data = search_data
+        Clock.schedule_once(partial(self.update_page,'search',search_data),0.2)
     def apply_filters(self, item, filters):
         date_filter = filters['date']
         if date_filter[0] and date_filter[1]:
@@ -219,6 +255,7 @@ class Nav_first_scr(Screen):
         if search_filter and (search_filter not in item['name'] and search_filter not in item['desc']):
             return False
         return True
+    ############search function############
     def clear_fun(self,*args):
         self.ids.search_id.text_in.text=''
         self.ids.io_id.text_in.text=''
@@ -230,67 +267,4 @@ class Nav_first_scr(Screen):
         self.from_date=None
         self.to_date=None
         Clock.schedule_once(self.document_list, 0.8)
-     # def search_fun(self,*args):
-    #     search=self.ids.search_id.text_in.text
-    #     io=self.ids.io_id.text_in.text
-    #     style=self.ids.style_id.text_in.text
-    #     color=self.ids.color_id.text_in.text
-    #     pi=self.ids.pi_id.text_in.text
-    #     if self.from_date and self.to_date and io and style and color and pi and search:    
-    #         search_data=[i for i in self.data if  (self.from_date <= datetime.strptime(i['date'], '%Y-%m-%d').date() <= self.to_date) and (io in i['io']) and (style in i['style'])  and (color in i['color']) and (pi in i['pi']) and (search in str(i['value']) or search in i['name'] or search in i['desc'])]
-    #         self.ids.list_card.data=search_data
-    #         print('all')
-    #     elif self.from_date and self.to_date and io and style and color and pi:    
-    #         search_data=[i for i in self.data if  (self.from_date <= datetime.strptime(i['date'], '%Y-%m-%d').date() <= self.to_date) and (io in i['io']) and (style in i['style'])  and (color in i['color']) and (pi in i['pi'])]
-    #         self.ids.list_card.data=search_data
-    #         print('date+io+style+color+pi')
-    #     elif self.from_date and self.to_date and io and style and color:    
-    #         search_data=[i for i in self.data if  (self.from_date <= datetime.strptime(i['date'], '%Y-%m-%d').date() <= self.to_date) and (io in i['io']) and (style in i['style'])  and (color in i['color']) ]
-    #         self.ids.list_card.data=search_data
-    #         print('date+io+style+color')
-    #     elif self.from_date and self.to_date and io and style:    
-    #         search_data=[i for i in self.data if  (self.from_date <= datetime.strptime(i['date'], '%Y-%m-%d').date() <= self.to_date) and (io in i['io']) and (style in i['style'])]
-    #         self.ids.list_card.data=search_data
-    #         print('date+io+style')
-    #     elif self.from_date and self.to_date and io:    
-    #         search_data=[i for i in self.data if  (self.from_date <= datetime.strptime(i['date'], '%Y-%m-%d').date() <= self.to_date) and (io in i['io'])]
-    #         self.ids.list_card.data=search_data
-    #         print('date+io')
-    #     elif self.from_date and self.to_date:
-    #         search_data=[i for i in self.data if  (self.from_date <= datetime.strptime(i['date'], '%Y-%m-%d').date() <= self.to_date)]
-    #         self.ids.list_card.data=search_data
-    #         print('date')
-    #     elif io and style and color and pi:    
-    #         search_data=[i for i in self.data if  (io in i['io']) and (style in i['style'])  and (color in i['color']) and (pi in i['pi'])]
-    #         self.ids.list_card.data=search_data
-    #         print('io+style+color+pi')
-    #     elif style and color and pi:    
-    #         search_data=[i for i in self.data if  (style in i['style'])  and (color in i['color']) and (pi in i['pi'])]
-    #         self.ids.list_card.data=search_data
-    #         print('style+color+pi')
-    #     elif color and pi:    
-    #         search_data=[i for i in self.data if (color in i['color']) and (pi in i['pi'])]
-    #         self.ids.list_card.data=search_data
-    #         print('color+pi')
-    #     elif io:    
-    #         search_data=[i for i in self.data if (io in i['io'])]
-    #         self.ids.list_card.data=search_data
-    #         print('io')
-    #     elif style:    
-    #         search_data=[i for i in self.data if (style in i['style'])]
-    #         self.ids.list_card.data=search_data
-    #         print('style')
-    #     elif color:
-    #         search_data=[i for i in self.data if (color in i['color'])]
-    #         self.ids.list_card.data=search_data
-    #         print('color')
-    #     elif pi:    
-    #         search_data=[i for i in self.data if (pi in i['pi'])]
-    #         self.ids.list_card.data=search_data
-    #         print('pi')
-    #     elif search:
-    #         search_data=[i for i in  self.data if search in str(i['value']) or search in i['name'] or search in i['desc']]
-    #         self.ids.list_card.data=search_data
-    #         print('search')
-    #     self.salary_print_data=search_data
-        #if x.name.lower().find(self.ids.search_id.text_in.text.lower())!=-1 or x.description.lower().find(self.ids.search_id.text_in.text.lower())!=-1 or x.io.lower().find(self.ids.io_id.text_in.text.lower())!=-1 or x.style.lower().find(self.ids.style_id.text_in.text.lower())!=-1 or x.color.lower().find(self.ids.color_id.text_in.text.lower())!=-1 or x.pi.lower().find(self.ids.pi_id.text_in.text.lower())!=-1
+ 

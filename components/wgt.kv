@@ -1,3 +1,4 @@
+#:import partial functools.partial
 <ProfileImage@Image>:   
     source: "assets/images/ai.png"
     radius:[20]
@@ -102,13 +103,25 @@
 
        
 <DialogContent>:
-    orientation: "vertical"
     spacing: "12dp"
-    size_hint_y:None
-    height: "420dp"
-    MDTextField:
-        id: name
-        hint_text: "Name"
+    size_hint_y: None
+    height: "70dp"
+    orientation:'vertical'
+    Lyt:
+        MDTextField:
+            id:nav_pass
+            hint_text:"Enter key..."
+            mode:"round"
+            pos_hint:{'center_x':.5,'center_y':.5}
+            password: True
+            icon_left: "key-variant"
+        MDIconButton:
+            icon:"eye-off"
+            theme_text_color:"Hint"
+            pos_hint:{'center_x':.95,'center_y':.5}
+            on_release:
+                self.icon = "eye" if self.icon == "eye-off" else "eye-off"
+                nav_pass.password = False if nav_pass.password is True else True
 
 <RightCheckbox>:
     size_hint: None, None
@@ -178,12 +191,26 @@
             bold:True
             pos_hint:{'center_y':.9}
         MDLabel:
+            text:'Invoice No'
+            font_size:'16sp'
+            halign:'left'
+            bold:True
+            color:'lightgrey'
+            pos_hint:{'center_y':.8}
+        MDLabel:
             text:root.desc
             font_size:'21sp'
             color: 'grey'
             halign:'left'
             bold:True
-            pos_hint:{'center_y':.75}
+            pos_hint:{'center_y':.7}
+        MDLabel:
+            text:'Description'
+            font_size:'16sp'
+            halign:'left'
+            bold:True
+            color:'lightgrey'
+            pos_hint:{'center_y':.6}
         MDLabel:
             text:root.io
             font_size:'16sp'
@@ -192,6 +219,13 @@
             halign:'left'
             pos_hint:{'center_y':.5}
         MDLabel:
+            text:'Description'
+            font_size:'16sp'
+            halign:'left'
+            bold:True
+            color:'lightgrey'
+            pos_hint:{'center_y':.43}
+        MDLabel:
             text:root.style
             font_size:'17sp'
             color:'#2254B6'
@@ -199,19 +233,42 @@
             halign:'center'
             pos_hint:{'center_y':.5}
         MDLabel:
+            text:'Style'
+            font_size:'16sp'
+            halign:'center'
+            bold:True
+            color:'lightgrey'
+            pos_hint:{'center_y':.43}
+        MDLabel:
             text:root.color
             font_size:'17sp'
             color:'#2254B6'
             bold:True
             halign:'center'
-            pos_hint:{'center_y':.35}
+            pos_hint:{'center_y':.3}
+        MDLabel:
+            text:'color'
+            font_size:'16sp'
+            halign:'center'
+            bold:True
+            color:'lightgrey'
+            pos_hint:{'center_y':.23}
+        
         MDLabel:
             text:root.pi
             font_size:'17sp'
             color:'#2254B6'
             bold:True
             halign:'left'
-            pos_hint:{'center_y':.35}
+            pos_hint:{'center_y':.3}
+        MDLabel:
+            text:'pi'
+            font_size:'16sp'
+            halign:'left'
+            bold:True
+            color:'lightgrey'
+            pos_hint:{'center_y':.23}
+        
         MDLabel:
             text:root.date
             font_size:'17sp'
@@ -220,25 +277,40 @@
             halign:'right'
             pos_hint:{'center_y':.5}
         MDLabel:
+            text:'Date'
+            font_size:'16sp'
+            halign:'right'
+            bold:True
+            color:'lightgrey'
+            pos_hint:{'center_y':.43}
+        MDLabel:
             text:root.value
             font_size:'17sp'
             color:'#2254B6'
             bold:True
             halign:'right'
-            pos_hint:{'center_y':.35}
+            pos_hint:{'center_y':.3}
+            opacity:0
+        MDLabel:
+            text:'Value'
+            font_size:'16sp'
+            halign:'right'
+            bold:True
+            color:'lightgrey'
+            pos_hint:{'center_y':.23}
         Update_btn:
             text:"Update"
-            pos_hint:{'center_x':.5,'center_y':.1}
-            on_press:root.update_card_item()
+            pos_hint:{'center_x':.5,'center_y':.06}
+            on_press:app.show_alert_dialog(root.update_card_item,"Are you Sure? Update Document")
             opacity:root.update_opacity
         Delete_btn:
             text:"Delete"
-            pos_hint:{'center_x':.7,'center_y':.1}
-            on_press:root.delete_card_item()
+            pos_hint:{'center_x':.7,'center_y':.06}
+            on_press:app.show_alert_dialog(root.delete_card_item,"Are you Sure? Delete Document")
             opacity:root.del_opacity
-        Export_btn:
-            text:"More"
-            pos_hint:{'center_x':.9,'center_y':.1}
+        Submit_btn:
+            text:"view"
+            pos_hint:{'center_x':.9,'center_y':.06}
             on_press:root.view_card_item()
             opacity:root.view_opacity
 <Btn@Button>:
@@ -263,3 +335,69 @@
         hint_text: self.parent.hint_text
         write_tab:False
         disabled:self.parent.disabled
+##################custom list menu##############
+<Cutom_list_dialog>:
+    viewclass:'Custom_list'
+    RecycleBoxLayout:
+        orientation: 'vertical'
+        size_hint_y: None
+        default_size: dp(400), dp(50)
+        default_size_hint: None, None
+        height: self.minimum_height
+        spacing:'5dp'
+<Custom_list>:
+    text: root.text
+    color:app.theme_cls.primary_dark
+  
+    IconLeftWidget:
+        icon:"database"
+        theme_text_color:"Custom"
+        text_color:"#2254B6"
+    IconRightWidget:
+        icon:"check"
+        theme_text_color:"Custom"
+        text_color:"#2254B6"
+<MenuDialogContent>:
+    orientation:'vertical'
+    padding:'10dp'
+    spacing:'10dp'
+    size_hint_y:None
+    height:'500dp'
+    MDTextField:
+        text:''
+        id:search_text
+        hint_text:'Enter Text'
+        mode:"rectangle"
+        size_hint_y:None
+        height:'35dp'
+        focus: True
+        on_text:root.on_text(self.text)
+    Cutom_list_dialog:
+        id:search_list
+        data:root.data
+    MDBoxLayout:
+        size_hint_y:None
+        height:'50dp'
+        orientation:'horizontal'
+        padding:'5dp'
+        MDIconButton:
+            icon:'chevron-left'
+            theme_text_color:'Custom'
+            text_color:'#2254B6'
+            on_press:root.on_prev_page('data')
+        MDLabel:
+            id:card_page_status
+            text:root.status
+            halign:'center'
+            font_size:'16sp'
+            color:'#2254B6'
+        MDIconButton:
+            icon:'chevron-right'
+            theme_text_color:'Custom'
+            text_color:'#2254B6'
+            on_press:root.on_next_page('data')
+        Spiner:
+            id:spinner
+            size_hint:None,None
+            size:dp(40),dp(40)
+            active:root.load_spinner

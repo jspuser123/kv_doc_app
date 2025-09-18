@@ -1,9 +1,10 @@
 <Nav_report_scr>:
     MDBoxLayout:
         orientation:'horizontal'
-        size_hint:.95,.05
+        size_hint:1,.05
         pos_hint:{'center_x':.5,'center_y':.88}
         padding:'5dp'
+        md_bg_color: app.theme_cls.primary_color
         MDLabel:
             text:"Report Page"
             halign:"center"
@@ -11,13 +12,71 @@
             color:'#1f2ce6ff'
             font_size:'20sp'
     MDBoxLayout:
+        orientation:'horizontal'
+        size_hint:.95,.05
+        pos_hint:{'center_x':.5,'center_y':.823}
+        spacing:'5dp'
+        #padding:'5dp'
+        Btn:
+            text: 'From Date'
+            id:from_date_id
+            on_release:app.show_date_picker(root.from_date_fun)
+        Btn:
+            text: 'To Date'
+            id:to_date_id
+            on_release:app.show_date_picker(root.to_date_fun)
+        Line_text:
+            id:io_id
+            hint_text: 'IO'
+            on_focus:
+                if self.focus:app.show_menu_dialog('IO',root.search_io_fun,root.menu_page_next,root.menu_page_prve,root.on_submit_menu)
+                Clock.schedule_once(partial(root.load_menu_fun,'io'),0.5)
+        Line_text:
+            id:style_id
+            hint_text: 'style'
+            on_focus:
+                if self.focus:app.show_menu_dialog('style',root.search_style_fun,root.menu_page_next,root.menu_page_prve,root.on_submit_menu)
+                Clock.schedule_once(partial(root.load_menu_fun,'style'),0.5)
+        Line_text:
+            id:color_id
+            hint_text: 'color'
+            on_focus:
+                if self.focus:app.show_menu_dialog('color',root.search_color_fun,root.menu_page_next,root.menu_page_prve,root.on_submit_menu)
+                Clock.schedule_once(partial(root.load_menu_fun,'color'),0.5)
+        Line_text:
+            id:pi_id
+            hint_text: 'pi'
+            on_focus:
+                if self.focus:app.show_menu_dialog('pi',root.search_color_fun,root.menu_page_next,root.menu_page_prve,root.on_submit_menu)
+                Clock.schedule_once(partial(root.load_menu_fun,'pi'),0.5)
+        Line_text:
+            id:search_id
+            hint_text:'search'
+        Btn:
+            text: 'Search'
+            on_press:root.search_fun()
+        Btn:
+            text: 'clear'
+            on_press:root.clear_fun()
+    MDBoxLayout:
         id:report_table
         orientation:'vertical'
         size_hint:.95,.74
         pos_hint:{'center_x':.5,'center_y':.42}
-        
-
     MDBoxLayout:
+        md_bg_color:app.theme_cls.primary_light
         orientation:'horizontal'
         size_hint:.95,.05
         pos_hint:{'center_x':.5,'center_y':.023}
+        padding:'5dp'
+        padding:'5dp'
+        Export_btn:
+            id:print_btn
+            text:"Print"
+            on_press: app.show_alert_dialog(root.export_fun,"Are you Sure? Export Report")
+    Spin:
+        id:spin
+        pos_hint:{'center_x':.5,'center_y':.5}
+        active:False
+
+        

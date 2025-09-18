@@ -1,11 +1,12 @@
 <Nav_first_scr>:
     MDBoxLayout:
         orientation:'horizontal'
-        size_hint:.95,.05
+        size_hint:1,.05
         pos_hint:{'center_x':.5,'center_y':.88}
         padding:'5dp'
+        md_bg_color: app.theme_cls.primary_color
         MDLabel:
-            text:"Document List"
+            text:"Main Page"
             halign:"center"
             bold:True
             color:'#1f2ce6ff'
@@ -28,20 +29,27 @@
         Line_text:
             id:io_id
             hint_text: 'IO'
-            on_focus: if self.focus:root.io_menu.open()
-            #text_call:root.text_change(io_id.text_in.text)
+            on_focus:
+                if self.focus:app.show_menu_dialog('IO',root.search_io_fun,root.menu_page_next,root.menu_page_prve,root.on_submit_menu)
+                Clock.schedule_once(partial(root.load_menu_fun,'io'),0.5)
         Line_text:
             id:style_id
             hint_text: 'style'
-            on_focus: if self.focus:root.style_menu.open()
+            on_focus:
+                if self.focus:app.show_menu_dialog('style',root.search_style_fun,root.menu_page_next,root.menu_page_prve,root.on_submit_menu)
+                Clock.schedule_once(partial(root.load_menu_fun,'style'),0.5)
         Line_text:
             id:color_id
             hint_text: 'color'
-            on_focus: if self.focus:root.color_menu.open()
+            on_focus:
+                if self.focus:app.show_menu_dialog('color',root.search_color_fun,root.menu_page_next,root.menu_page_prve,root.on_submit_menu)
+                Clock.schedule_once(partial(root.load_menu_fun,'color'),0.5)
         Line_text:
             id:pi_id
             hint_text: 'pi'
-            on_focus: if self.focus:root.pi_menu.open()
+            on_focus:
+                if self.focus:app.show_menu_dialog('pi',root.search_color_fun,root.menu_page_next,root.menu_page_prve,root.on_submit_menu)
+                Clock.schedule_once(partial(root.load_menu_fun,'pi'),0.5)
         Line_text:
             id:search_id
             hint_text:'search'
@@ -66,7 +74,29 @@
         size_hint:.95,.05
         pos_hint:{'center_x':.5,'center_y':.023}
         #padding:'5dp'
+        md_bg_color: app.theme_cls.primary_color
         Lyt:
+            MDIconButton:
+                icon: 'chevron-left'
+                theme_text_color:'Custom'
+                text_color:'#1f2ce6ff'
+                pos_hint:{'center_x':.3,'center_y':.5}
+                on_press:
+                    root.page_prves()
+            MDLabel:
+                id:card_page_status
+                text:"Documents List"
+                halign:"center"
+                bold:True
+                color:app.theme_cls.opposite_bg_light
+            MDIconButton:
+                icon: 'chevron-right'
+                theme_text_color:'Custom'
+                text_color:'#1f2ce6ff'
+                pos_hint:{'center_x':.7,'center_y':.5}
+                on_press:
+                    root.page_prves()
+                
             MDIconButton:
                 icon: 'plus'
                 theme_text_color:'Custom'
@@ -76,3 +106,7 @@
                 on_press:
                     root.nav_manager.current = "add_scr"
                     root.nav_manager.get_screen('add_scr').cancel_document()
+    Spin:
+        id:spin
+        pos_hint:{'center_x':.5,'center_y':.5} 
+        active:False 

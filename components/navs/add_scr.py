@@ -55,6 +55,7 @@ class Nav_add_scr(Screen):
                 self.ids.list_cards.remove_widget(i)
         print('remove',item.id)
     def save_document(self,*args):
+        self.ids.spin.acitve=True
         name=self.ids.name.text_in.text
         description=self.ids.document_description.text_in.text
         io=self.ids.document_io.text_in.text
@@ -125,12 +126,14 @@ class Nav_add_scr(Screen):
                                                                         text=i.name,
                                                                         secondary_text=i.file,
                                                                         ))
+        self.ids.spin.acitve=False
     def document_load(self,*args):
         id=args[0]
         name=args[1]
         link=args[2] 
         os.startfile(r'file:///'+link)
     def document_delete(self,*args):
+        self.ids.spin.acitve=True
         try:
             x=args[0].id_data
             with get_session() as session:
@@ -144,6 +147,7 @@ class Nav_add_scr(Screen):
             self.ids.documents_cards.remove_widget(args[0])
         except Exception as e:
             self.app.notify(f'Error: {e}',1)
+        self.ids.spin.acitve=False
     def cancel_document(self,*args):
         self.ids.name.text_in.text=''
         self.ids.document_description.text_in.text=''
@@ -199,6 +203,7 @@ class Nav_add_scr(Screen):
     def remove_item(self,item):
         self.ids.list_cards.remove_widget(item)
     def document_update_data(self,*args):
+        self.ids.spin.acitve=True
         self.ids.submit_btn.disabled=True
         self.ids.update_btn.disabled=False
         self.ids.documents_cards.clear_widgets()
@@ -250,8 +255,9 @@ class Nav_add_scr(Screen):
         self.ids.inr.text_in.text=str(ex_data.inr)
         self.ids.percent.text_in.text=str(ex_data.percent)
         self.ids.document_value.text_in.text=ex_data.value
-
+        self.ids.spin.acitve=False
     def update_remove_document(self,*args):
+        self.ids.spin.acitve=True
         id=args[0]
         name=args[1]
         file=args[2]
@@ -264,7 +270,9 @@ class Nav_add_scr(Screen):
             print('remove',id)
         except Exception as e:
             self.app.notify(f'Error: {e}',1)
+        self.ids.spin.acitve=False
     def document_update(self,*args):
+        self.ids.spin.acitve=True
         if not self.ids.documents_cards.children:
             print('no document list')
             return
@@ -362,3 +370,4 @@ class Nav_add_scr(Screen):
         self.ids.document_color.text_in.text=data['color']
         self.ids.document_pi.text_in.text=data['pi']
         self.ids.document_value.text_in.text=data['value']
+        self.ids.spin.acitve=False

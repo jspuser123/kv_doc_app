@@ -2,7 +2,7 @@ from kivy.lang import Builder
 from kivymd.app import MDApp
 from kivy.core.window import Window
 from kivy.uix.screenmanager import ScreenManager, Screen
-from components.wgt import MDDialog,MDFlatButton,DialogContent,Clock,platform,random,partial,sha256,math,datetime
+from components.wgt import MDDialog,MDFlatButton,DialogContent,Clock,platform,random,partial,sha256,math,datetime,os,webbrowser,dp,MenuDialogContent
 from kivymd.uix.pickers import MDDatePicker
 from screens.login import Login_page
 from screens.regsistor import Regsistor_page
@@ -30,9 +30,11 @@ class DocApp(MDApp):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.alert_dialog = None
-        self.setting_dialog = None
+        self.nav_dialog = None
+        self.show_menu = None
         self.admob=None
         self.date_b=[]
+        self.company_name='Morpho kintwear'
     def build(self):
         self.sm=ScreenManager()
         self.theme_cls.theme_style = "Light"
@@ -86,34 +88,56 @@ class DocApp(MDApp):
             ],
         )
         self.alert_dialog.open()
+    def on_alret_dismiss(self,*args):
+        self.alert_dialog.dismiss()
     def show_setting_dialog(self,*args):
-        self.setting_dialog = MDDialog(
-            title="Add Ai Model:",
-            type="custom",
-            size_hint=(0.9, 0.9),
+        self.nav_dialog = MDDialog(
+            title=args[1] if len(args) > 1 else "Aru u sure permission?",
+            type='custom',
+            auto_dismiss=False,
             content_cls=DialogContent(),
             buttons=[
                 MDFlatButton(
+                    id='cancel_id',
                     text="CANCEL",
-                    theme_text_color="Custom",
-                    text_color=self.theme_cls.primary_color,
-                    on_press=self.on_dismiss,
+                    on_press=args[2] if len(args) > 2 else self.nav_dialog_close_fun,
                 ),
                 MDFlatButton(
-                    text="Submit",
-                    theme_text_color="Custom",
-                    text_color=self.theme_cls.primary_color,
+                    id='sumbit_id',
+                    text="SUBMIT",
                     on_press=args[0],
                 ),
             ],
         )
-        self.setting_dialog.open()
+        self.nav_dialog.open()
+    def nav_dialog_close_fun(self,*args):
+        self.nav_dialog.dismiss()
+    def show_menu_dialog(self,*args):
+        self.show_menu = MDDialog(
+            title=f"{args[0]} List",
+            type="custom",
+            size_hint=(None, 0.9),
+            width=dp(450),
+            content_cls=MenuDialogContent(text_call=args[1],next_page=args[2],prev_page=args[3]),
+            elevation=0,
+            buttons=[
+                MDFlatButton(
+                    text="CANCEL",
+                    theme_text_color="Custom",
+                    on_press=self.show_menu_on_dismiss,
+                ),
+                MDFlatButton(
+                    text="Submit",
+                    theme_text_color="Custom",
+                    on_press=args[4],
+                ),
+            ],
+        )
+        self.show_menu.open()
+    def show_menu_on_dismiss(self, *args):
+        self.show_menu.dismiss()
     def notify(self,text:str,*args):
         toast(text)
-    def on_alret_dismiss(self,*args):
-        self.alert_dialog.dismiss()
-    def on_dismiss(self,*args):
-        self.setting_dialog.dismiss()
     def id_gen(self,*args):
         digits="0123456789"
         OTP=''
@@ -143,6 +167,10 @@ class DocApp(MDApp):
             self.token=sha256(ins.encode('utf-8')).hexdigest()
         except Exception as e:
             self.noty_fy(f'token error{e}') 
+    def excute_fun(self,*args):
+        if 0 < len(args):
+            #self.files=self.files.replace('\\','/')
+            webbrowser.open(f'file://{os.path.expanduser("~")}/Documents/{args[0]}')
     def ad_event_callback(self, event, *args):  ####this ad related function is not working
         print(f"[AdEvent in Kivy APP ] {event}: {args}")
     def on_exit(self,*args):

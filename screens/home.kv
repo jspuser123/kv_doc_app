@@ -9,8 +9,8 @@
         left_action_items: [["menu", lambda x: x]]
     MDNavigationLayout:
         MDScreenManager:
-            pos_hint:{'center_x':.59,'center_y':.5}
-            size_hint_x:.779
+            pos_hint:{'center_x':.61,'center_y':.5}
+            size_hint_x:.82
             id:nav_manager
             Nav_first_scr:
                 name: "first_scr"
@@ -68,7 +68,7 @@
                     text:'Report'
                     on_release:
                         nav_manager.current = "report_scr"
-                        nav_manager.transition.direction = "right"
+                        nav_manager.transition.direction = "left"
                     IconLeftWidget:
                         icon: "file"
                         theme_text_color:'Custom'
@@ -77,7 +77,7 @@
                     text:'Settings'
                     on_release:
                         nav_manager.current = "setting_scr"
-                        nav_manager.transition.direction = "right"
+                        nav_manager.transition.direction = "down"
                     IconLeftWidget:
                         icon: "cog"
                         theme_text_color:'Custom'

@@ -1,9 +1,8 @@
 from kivy.uix.screenmanager import Screen
-from components.wgt import MDApp,Builder,Clock,partial,ObjectProperty,platform,os,Items_Card,Animation,TwoLineAvatarIconListItem,IconLeftWidget,IconRightWidget
+from components.wgt import MDApp,Builder,Clock,partial,ObjectProperty,platform,os,Items_Card,Animation,TwoLineAvatarIconListItem,IconLeftWidget,IconRightWidget,webbrowser
 # from components.tabs.add.tab_1 import Tab_company
 from models.model import document_name,document,document_child
 from models.db_con import *
-import webbrowser
 Builder.load_file(os.path.join(os.path.dirname(__file__),f'view_scr.kv'))
 class Nav_view_scr(Screen):
     def __init__(self, **kwargs):

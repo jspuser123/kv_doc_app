@@ -30,6 +30,7 @@ import math
 from threading import Thread
 from datetime import datetime
 import shutil
+import webbrowser
 
 
 Builder.load_file(os.path.join(os.path.dirname(__file__),f'wgt.kv'))
@@ -150,3 +151,35 @@ class ClientsTable(MDBoxLayout):
             row_data=rows,
         )
         self.add_widget(self.data_tables)
+##################custom list menu##############
+class Custom_list(OneLineAvatarIconListItem,HoverBehavior):
+    text=StringProperty('')
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.app=MDApp.get_running_app()
+    def on_enter(self, *args):
+        self.bg_color="white"
+    def on_leave(self, *args):
+        self.bg_color=self.app.theme_cls.bg_dark
+class Cutom_list_dialog(RecycleView):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+class MenuDialogContent(MDBoxLayout):
+    text_call=ObjectProperty()
+    next_page=ObjectProperty()
+    prev_page=ObjectProperty()
+    status=StringProperty()
+    load_spinner=BooleanProperty(False)
+    data=ListProperty([])
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.app=MDApp.get_running_app()
+    def on_text(self, *args):
+        if self.text_call:
+            self.text_call(args[0])
+    def on_next_page(self,*args):
+        if args[0]=='data':
+            self.next_page()
+    def on_prev_page(self,*args):
+        if args[0]=='data':
+            self.prev_page()

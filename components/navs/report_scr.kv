@@ -66,14 +66,14 @@
     MDBoxLayout:
         md_bg_color:app.theme_cls.primary_light
         orientation:'horizontal'
-        size_hint:.95,.05
+        size_hint:1,.1
         pos_hint:{'center_x':.5,'center_y':.023}
-        padding:'5dp'
-        padding:'5dp'
+        padding:'15dp'
         Export_btn:
             id:print_btn
             text:"Print"
             on_press: app.show_alert_dialog(root.export_fun,"Are you Sure? Export Report")
+            pos_hint:{'center_x':.5,'center_y':.5}
     Spin:
         id:spin
         pos_hint:{'center_x':.5,'center_y':.5}

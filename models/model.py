@@ -41,6 +41,7 @@ class document(Base):
     usd=Column(Float)
     po_value_usd=Column(Float)
     delivery_usd=Column(Float)
+    excange_rate=Column(Float)
     excess_stock=Column(Float)
     stock_value_usd=Column(Float)
     inr=Column(Float)
@@ -63,7 +64,7 @@ class path_server(Base):
     description=Column(String(255))
 
 
-DATABASE_URL ="sqlite:///base/data.db"
+DATABASE_URL ="sqlite:///../base./data.db"
 #"sqlite:///../data.db"
 #DATABASE_URL = f"mysql+mysqlconnector://{username}:{passwd}@{host}:{port}/{database}"
 #f'mssql+pyodbc://{username}:{password}@{server}/{database}?driver={driver}'

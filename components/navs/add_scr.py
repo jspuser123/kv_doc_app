@@ -56,27 +56,27 @@ class Nav_add_scr(Screen):
         print('remove',item.id)
     def save_document(self,*args):
         self.ids.spin.acitve=True
-        name=self.ids.name.text_in.text
-        description=self.ids.document_description.text_in.text
-        io=self.ids.document_io.text_in.text
-        style=self.ids.document_style.text_in.text
-        color=self.ids.document_color.text_in.text
-        pi=self.ids.document_pi.text_in.text
-        po_qty=self.ids.po_qty.text_in.text
-        delivery_qty=self.ids.delivery_qty.text_in.text
-        usd=self.ids.usd.text_in.text
-        po_value_usd=self.ids.po_value_usd.text_in.text
-        delivery_usd=self.ids.delivery_usd.text_in.text
-        excess_stock=self.ids.excess_stock.text_in.text
-        stock_value_usd=self.ids.stock_value_usd.text_in.text
-        inr=self.ids.inr.text_in.text
-        percent=self.ids.percent.text_in.text
-        value=self.ids.document_value.text_in.text
-        if not name and not description and not io and not style and not color and not pi and not value:
+        name=self.ids.name.text
+        description=self.ids.document_description.text
+        io=self.ids.document_io.text
+        style=self.ids.document_style.text
+        color=self.ids.document_color.text
+        pi=self.ids.document_pi.text
+        po_qty=self.ids.po_qty.text
+        delivery_qty=self.ids.delivery_qty.text
+        usd=self.ids.usd.text
+        excange_rate=self.ids.excange_rate.text
+        po_value_usd=self.ids.po_value_usd.text
+        delivery_usd=self.ids.delivery_usd.text
+        excess_stock=self.ids.excess_shortage.text
+        inr=self.ids.inr.text
+        percent=self.ids.percent.text
+        value=self.ids.document_value.text
+        if not name and not description and not io and not style and not color and not pi:
             return
         try:
             with get_session() as session:
-                x=document(name=name,description=description,io=io,style=style,color=color,pi=pi,value=value,date=datetime.now(),po_qty=float(po_qty),delivery_qty=float(delivery_qty),usd=float(usd),po_value_usd=float(po_value_usd),delivery_usd=float(delivery_usd),excess_stock=float(excess_stock),stock_value_usd=float(stock_value_usd),inr=float(inr),percent=float(percent))
+                x=document(name=name,description=description,io=io,style=style,color=color,pi=pi,value=value,date=datetime.now(),po_qty=float(po_qty),delivery_qty=float(delivery_qty),usd=float(usd),inr=float(inr),excange_rate=float(excange_rate),po_value_usd=float(po_value_usd),delivery_usd=float(delivery_usd),excess_stock=float(excess_stock),percent=float(percent))
                 session.add(x)
                 session.commit()
                 self.doc_temp_id=x.id
@@ -149,24 +149,24 @@ class Nav_add_scr(Screen):
             self.app.notify(f'Error: {e}',1)
         self.ids.spin.acitve=False
     def cancel_document(self,*args):
-        self.ids.name.text_in.text=''
-        self.ids.document_description.text_in.text=''
-        self.ids.document_io.text_in.text=''
-        self.ids.document_style.text_in.text=''
-        self.ids.document_color.text_in.text=''
-        self.ids.document_pi.text_in.text=''
-        self.ids.document_value.text_in.text=''
+        self.ids.name.text=''
+        self.ids.document_description.text=''
+        self.ids.document_io.text=''
+        self.ids.document_style.text=''
+        self.ids.document_color.text=''
+        self.ids.document_pi.text=''
+        self.ids.document_value.text=''
         self.ids.document_name.text=''
         self.ids.document_path.text=''
-        self.ids.po_qty.text_in.text=''
-        self.ids.delivery_qty.text_in.text=''
-        self.ids.usd.text_in.text=''
-        self.ids.po_value_usd.text_in.text=''
-        self.ids.delivery_usd.text_in.text=''
-        self.ids.excess_stock.text_in.text=''
-        self.ids.stock_value_usd.text_in.text=''
-        self.ids.inr.text_in.text=''
-        self.ids.percent.text_in.text=''
+        self.ids.po_qty.text=''
+        self.ids.delivery_qty.text=''
+        self.ids.usd.text=''
+        self.ids.excange_rate.text=''
+        self.ids.po_value_usd.text=''
+        self.ids.delivery_usd.text=''
+        self.ids.excess_shortage.text=''
+        self.ids.inr.text=''
+        self.ids.percent.text=''
         self.ids.list_cards.clear_widgets()
         self.ids.documents_cards.clear_widgets()
         self.ids.submit_btn.disabled=False
@@ -238,23 +238,23 @@ class Nav_add_scr(Screen):
                                                                         text=i.name,
                                                                         secondary_text=i.file,
                                                                         ))
-        self.ids.name.text_in.text=data.name
-        self.ids.document_description.text_in.text=data.desc
-        self.ids.document_io.text_in.text=data.io
-        self.ids.document_style.text_in.text=data.style
-        self.ids.document_color.text_in.text=data.color
-        self.ids.document_pi.text_in.text=data.pi
+        self.ids.name.text=data.name
+        self.ids.document_description.text=data.desc
+        self.ids.document_io.text=data.io
+        self.ids.document_style.text=data.style
+        self.ids.document_color.text=data.color
+        self.ids.document_pi.text=data.pi
         ex_data=select_one(document,id=data.id_data)
-        self.ids.po_qty.text_in.text=str(ex_data.po_qty)
-        self.ids.delivery_qty.text_in.text=str(ex_data.delivery_qty)
-        self.ids.usd.text_in.text=str(ex_data.usd)
-        self.ids.po_value_usd.text_in.text=str(ex_data.po_value_usd)
-        self.ids.delivery_usd.text_in.text=str(ex_data.delivery_usd)
-        self.ids.excess_stock.text_in.text=str(ex_data.excess_stock)
-        self.ids.stock_value_usd.text_in.text=str(ex_data.stock_value_usd)
-        self.ids.inr.text_in.text=str(ex_data.inr)
-        self.ids.percent.text_in.text=str(ex_data.percent)
-        self.ids.document_value.text_in.text=ex_data.value
+        self.ids.excange_rate.text=str(ex_data.excange_rate)
+        self.ids.po_qty.text=str(ex_data.po_qty)
+        self.ids.delivery_qty.text=str(ex_data.delivery_qty)
+        self.ids.usd.text=str(ex_data.usd)
+        self.ids.po_value_usd.text=str(ex_data.po_value_usd)
+        self.ids.delivery_usd.text=str(ex_data.delivery_usd)
+        self.ids.excess_shortage.text=str(ex_data.excess_stock)
+        self.ids.inr.text=str(ex_data.inr)
+        self.ids.percent.text=str(ex_data.percent)
+        self.ids.document_value.text=ex_data.value
         self.ids.spin.acitve=False
     def update_remove_document(self,*args):
         self.ids.spin.acitve=True
@@ -277,22 +277,22 @@ class Nav_add_scr(Screen):
             print('no document list')
             return
         id=self.ids.documents_cards.children[::-1][0].id_data
-        name=self.ids.name.text_in.text
-        description=self.ids.document_description.text_in.text
-        io=self.ids.document_io.text_in.text
-        style=self.ids.document_style.text_in.text
-        color=self.ids.document_color.text_in.text
-        pi=self.ids.document_pi.text_in.text
-        po_qty=self.ids.po_qty.text_in.text
-        delivery_qty=self.ids.delivery_qty.text_in.text
-        usd=self.ids.usd.text_in.text
-        po_value_usd=self.ids.po_value_usd.text_in.text
-        delivery_usd=self.ids.delivery_usd.text_in.text
-        excess_stock=self.ids.excess_stock.text_in.text
-        stock_value_usd=self.ids.stock_value_usd.text_in.text
-        inr=self.ids.inr.text_in.text
-        percent=self.ids.percent.text_in.text
-        value=self.ids.document_value.text_in.text
+        name=self.ids.name.text
+        description=self.ids.document_description.text
+        io=self.ids.document_io.text
+        style=self.ids.document_style.text
+        color=self.ids.document_color.text
+        pi=self.ids.document_pi.text
+        po_qty=self.ids.po_qty.text
+        delivery_qty=self.ids.delivery_qty.text
+        usd=self.ids.usd.text if self.ids.usd.text !='' else '0'
+        excange_rate=self.ids.excange_rate.text
+        po_value_usd=self.ids.po_value_usd.text
+        delivery_usd=self.ids.delivery_usd.text
+        excess_shortage=self.ids.excess_shortage.text
+        inr=self.ids.inr.text if self.ids.inr.text !='' else '0'
+        percent=self.ids.percent.text
+        value=self.ids.document_value.text
         if name and description and io and style and color and  pi and value:
             data={
                 'name':name,
@@ -307,8 +307,8 @@ class Nav_add_scr(Screen):
                 'usd':float(usd),
                 'po_value_usd':float(po_value_usd),
                 'delivery_usd':float(delivery_usd),
-                'excess_stock':float(excess_stock),
-                'stock_value_usd':float(stock_value_usd),
+                'excange_rate':float(excange_rate),
+                'excess_stock':float(excess_shortage),
                 'inr':float(inr),
                 'percent':float(percent),
             }
@@ -363,11 +363,64 @@ class Nav_add_scr(Screen):
                                                                         text=i.name,
                                                                         secondary_text=i.file,
                                                                         ))
-        self.ids.name.text_in.text=data['name']
-        self.ids.document_description.text_in.text=data['description']
-        self.ids.document_io.text_in.text=data['io']
-        self.ids.document_style.text_in.text=data['style']
-        self.ids.document_color.text_in.text=data['color']
-        self.ids.document_pi.text_in.text=data['pi']
-        self.ids.document_value.text_in.text=data['value']
+        self.ids.name.text=data['name']
+        self.ids.document_description.text=data['description']
+        self.ids.document_io.text=data['io']
+        self.ids.document_style.text=data['style']
+        self.ids.document_color.text=data['color']
+        self.ids.document_pi.text=data['pi']
+        self.ids.document_value.text=data['value']
         self.ids.spin.acitve=False
+    def usd_calc(self,*args):
+        try:
+            if args[0]=='':
+                self.ids.po_value_usd.text=''
+                self.ids.delivery_usd.text=''
+                self.ids.excess_shortage.text=''
+                self.ids.percent.text=''
+                self.ids.document_value.text
+                return
+            po_qty=self.ids.po_qty.text
+            delivery_qty=self.ids.delivery_qty.text
+            usd=self.ids.usd.text
+            inr=self.ids.inr.text
+
+            if po_qty=='':
+                po_qty=0
+            if delivery_qty=='':
+                delivery_qty=0
+            if inr=='' and usd=='':
+                Clock.schedule_once(partial(self.app.notify,f'Inr and Usd is empty'),1)
+            elif usd=='' or usd=='0.0' or usd=='0':
+                po_value=float(po_qty)*float(inr)
+                delivery_value=float(delivery_qty)*float(inr)
+                self.ids.po_value_usd.text=f'{po_value:.2f}'
+                self.ids.delivery_usd.text=f'{delivery_value:.2f}'
+            else:
+                po_value=float(po_qty)*float(usd)*float(args[0])
+                delivery_value=float(delivery_qty)*float(usd)*float(args[0])
+                self.ids.po_value_usd.text=f'{po_value:.2f}'
+                self.ids.delivery_usd.text=f'{delivery_value:.2f}'
+            excess_shortage=float(delivery_qty)-float(po_qty)
+            self.ids.excess_shortage.text=f'{excess_shortage:.0f}'
+            Clock.schedule_once(partial(self.inr_value_calc,args[0]),0.5)
+        except Exception as e:
+            Clock.schedule_once(partial(self.app.notify,f'Usd or Inr error in usd_calc{e} '),1)
+
+    def inr_value_calc(self,*args):
+        try:
+            if args[0]=='':
+                self.ids.document_value.text=''
+                return
+            delivery_usd=self.ids.delivery_usd.text
+            excess_shortage=self.ids.excess_shortage.text
+            po_qty=self.ids.po_qty.text
+            if delivery_usd=='':
+                delivery_usd=0
+            percent=(float(excess_shortage)/float(po_qty))*100
+            value=float(delivery_usd)*1.05
+            self.ids.percent.text=f'{percent:.0f}'
+            self.ids.document_value.text=f'{value:.2f}'
+        except Exception as e:
+            Clock.schedule_once(partial(self.app.notify,f'Percent error in inr_value_calc{e} '),1)
+         

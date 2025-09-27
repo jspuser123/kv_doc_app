@@ -12,7 +12,7 @@ class Nav_report_scr(Screen):
         super().__init__(**kwargs)
         self.app=MDApp.get_running_app()
         self.nav_manager = ObjectProperty()
-        lis=[('No.', dp(20)),("IO", dp(20)),("Style", dp(20)),("Color", dp(20)),("PO Qty", dp(20)),("Delivery Qty", dp(20)),("USD", dp(20)),("PO Value USD", dp(30)),("Delivery USD", dp(30)),("Excess Stock", dp(20)),("Stock Value USD", dp(30)),("Inr", dp(20)),("Percent", dp(20))]
+        lis=[('No.', dp(20)),("IO", dp(20)),("Style", dp(20)),("Color", dp(20)),("PO Qty", dp(20)),("Delivery Qty", dp(20)),("USD", dp(20)),("Inr", dp(20)),("Exchange", dp(20)),("PO Value ", dp(30)),("Delivery value", dp(30)),("Excess", dp(20)),("Percent", dp(20)),('Invoice Value', dp(30))]
         self.report=ClientsTable(list_col=lis,pageing=True)
         self.from_date=None
         self.to_date=None
@@ -39,7 +39,7 @@ class Nav_report_scr(Screen):
         Clock.schedule_once(self.document_list, 0.1)
     def document_list(self,*args):
         self.report.data_tables.row_data=[ 
-            (i.id,i.io,i.style,i.color,i.po_qty,i.delivery_qty,i.usd,i.po_value_usd,i.delivery_usd,i.excess_stock,i.stock_value_usd,i.inr,i.percent) for i in self.data
+            (i.id,i.io,i.style,i.color,i.po_qty,i.delivery_qty,i.usd,i.inr,i.excange_rate,i.po_value_usd,i.delivery_usd,i.excess_stock,i.percent,i.value) for i in self.data
         ]
     def from_date_fun(self,*args):
         self.ids.from_date_id.text=str(args[1])
@@ -156,7 +156,7 @@ class Nav_report_scr(Screen):
         }
         search_data = [i for i in self.data if self.apply_filters(i, filters)]
         data=[
-        (i.id,i.io,i.style,i.color,i.po_qty,i.delivery_qty,i.usd,i.po_value_usd,i.delivery_usd,i.excess_stock,i.stock_value_usd,i.inr,i.percent) for i in search_data
+        (i.id,i.io,i.style,i.color,i.po_qty,i.delivery_qty,i.usd,i.inr,i.excange_rate,i.po_value_usd,i.delivery_usd,i.excess_stock,i.percent,i.value) for i in search_data
         ]
         self.report.data_tables.row_data = data
         self.print_data=search_data
@@ -201,15 +201,19 @@ class Nav_report_scr(Screen):
         hedaer_text=f'Doucment Report'
         footer_text=f'Powered By {self.app.company_name}'
         
-        table_data=[["No.","IO","Style","Color","PO Qty","Delivery Qty","USD","PO Value USD","Delivery USD","Excess Stock","Stock Value USD","Inr","Percent"]]
-        if not self.print_data:
-            self.print_data=self.data
-        for i in self.print_data:
-            table_data.append([i.id,i.io,i.style,i.color,i.po_qty,i.delivery_qty,i.usd,i.po_value_usd,i.delivery_usd,i.excess_stock,i.stock_value_usd,i.inr,i.percent])
-        time.sleep(1)
-        files=f'report.xlsx'
-        xl.xlsx(files,table_data,hedaer_text,footer_text)
-        Clock.schedule_once(partial(self.app.notify,f'report save success'),1)
-        Clock.schedule_once(partial(self.app.excute_fun,files),2)
-        self.ids.print_btn.disabled=False
-        self.ids.spin.active=False
+        table_data=[["No.","IO","Style","Color","PO Qty","Delivery Qty","USD","Inr","Exchange Rate","PO Value","Delivery value","Excess Stock","Percent",'Invoice Value']]
+        try:
+            if not self.print_data:
+                self.print_data=self.data
+            for i in self.print_data:
+                table_data.append([i.id,i.io,i.style,i.color,i.po_qty,i.delivery_qty,i.usd,i.inr,i.excange_rate,i.po_value_usd,i.delivery_usd,i.excess_stock,i.percent,i.value])
+            time.sleep(1)
+            files=f'doc_report_{i.io}_{datetime.now().strftime("%Y-%m-%d")}.xlsx'
+            xl.xlsx(files,table_data,hedaer_text,footer_text)
+            Clock.schedule_once(partial(self.app.notify,f'report save success'),1)
+            Clock.schedule_once(partial(self.app.excute_fun,files),2)
+            self.ids.spin.active=False
+            self.ids.print_btn.disabled=False
+        except Exception as e:
+            Clock.schedule_once(partial(self.app.notify,f'report error {e}'),1)
+            self.ids.print_btn.disabled=False

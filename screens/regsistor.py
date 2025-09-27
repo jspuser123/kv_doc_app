@@ -17,7 +17,7 @@ class Regsistor_page(Screen):
         self.ids.spin.active=True
         user_count = count_rows(auth, auth.id)
         usr,p1,p2,ph,eml,comp=self.ids.username.text,self.ids.pass1.text,self.ids.pass2.text,self.ids.phone.text,self.ids.email.text,self.ids.company.text
-        if user_count<=3: 
+        if user_count<=5: 
             if usr and p1 and p2 and ph and eml and comp:
                 if p1 == p2:
                     self.email_otp_fun(eml)

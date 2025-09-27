@@ -28,12 +28,13 @@ git lfs push --all origin main or git lfs pull
 git add .
 git push origin main
 ## exe build success
-
+ALTER TABLE document ADD exchange_rate FLOAT;
+ALTER TABLE document DROP COLUMN exchange_rate
 pyinstaller -c --onedir --add-data "D:\it\project\kv_doc_app\app\assets\images:assets\images" --add-data "D:\it\project\kv_doc_app\app\assets\fonts:assets\fonts" --add-data "D:\it\project\kv_doc_app\app\components:components" --add-data "D:\it\project\kv_doc_app\app\screens:screens" --add-data "D:\it\project\kv_doc_app\app\models:models" --add-data "D:\it\project\kv_doc_app\app\utility:utility" main.py
 
 pyinstaller -w --onefile --add-data "D:\it\project\kv_doc_app\app\assets\images:assets\images" --add-data "D:\it\project\kv_doc_app\app\assets\fonts:assets\fonts" --add-data "D:\it\project\kv_doc_app\app\components:components" --add-data "D:\it\project\kv_doc_app\app\screens:screens" --add-data "D:\it\project\kv_doc_app\app\models:models" --add-data "D:\it\project\kv_doc_app\app\utility:utility" main.py
 
-![image](\\assets\images\doc\demo1.png)
-![image](\\assets\images\doc\demo2.png)
-![image](\\assets\images\doc\demo3.png)
-![image](\\assets\images\doc\demo4.png)
+![image](./assets/images/doc/demo1.png)
+![image](./assets/images/doc/demo2.png)
+![image](./assets/images/doc/demo3.png)
+![image](./assets/images/doc/demo4.png)

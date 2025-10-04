@@ -50,6 +50,7 @@ class DocApp(MDApp):
     def on_start(self):
         Clock.schedule_once(self.andriod_config_fun,0.5)
         Clock.schedule_once(self.date_init,0.5)
+        Window.bind(on_key_down=self._on_key_down)
     def date_init(self,*args):
         self.date_dialog = MDDatePicker()
     def date_on_cancel(self, instance, value):
@@ -80,7 +81,7 @@ class DocApp(MDApp):
                     on_press=self.on_alret_dismiss,
                 ),
                 MDFlatButton(
-                    text="SAVE",
+                    text="Submit",
                     theme_text_color="Custom",
                     text_color=self.theme_cls.primary_color,
                     on_press=args[0],
@@ -174,6 +175,15 @@ class DocApp(MDApp):
     def ad_event_callback(self, event, *args):  ####this ad related function is not working
         print(f"[AdEvent in Kivy APP ] {event}: {args}")
     def on_exit(self,*args):
+        Window.unbind(on_key_down=self._on_key_down)
         self.stop()
+    def _on_key_down(self, window, key, scancode, codepoint, modifier):
+        if key == 27:
+            return True
+       # Window.bind(on_request_close=self.prevent_close)
+    def prevent_close(self, *args):
+        # Return True to prevent closing, False to allow closing
+        print("Close button pressed, but app won't close!")
+        return True
 if __name__ == '__main__':
     DocApp().run()

@@ -16,7 +16,7 @@ from kivymd.uix.tab import MDTabsBase
 from kivymd.uix.datatables import MDDataTable
 from kivy.metrics import dp
 from kivy.properties import *
-from kivymd.uix.list import OneLineAvatarIconListItem,IRightBodyTouch,TwoLineAvatarIconListItem,IconLeftWidget,IconRightWidget
+from kivymd.uix.list import OneLineAvatarIconListItem,IRightBodyTouch,ThreeLineAvatarIconListItem,IconLeftWidget,IconRightWidget
 from kivymd.uix.selectioncontrol import MDCheckbox
 from kivy.animation import Animation
 from kivymd.uix.behaviors import HoverBehavior,ScaleBehavior

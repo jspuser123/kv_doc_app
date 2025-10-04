@@ -1,5 +1,5 @@
 from kivy.uix.screenmanager import Screen
-from components.wgt import MDApp,Builder,Clock,partial,ObjectProperty,platform,os,shutil,Items_Card,Animation,TwoLineAvatarIconListItem,IconLeftWidget,IconRightWidget,MDDropdownMenu,filechooser
+from components.wgt import MDApp,Builder,Clock,partial,ObjectProperty,platform,os,shutil,Items_Card,Animation,ThreeLineAvatarIconListItem,IconLeftWidget,IconRightWidget,MDDropdownMenu,filechooser
 from models.model import document_name,document,document_child,path_server
 from models.db_con import *
 # from components.tabs.add.tab_1 import Tab_company
@@ -34,7 +34,8 @@ class Nav_add_scr(Screen):
         path=self.ids.document_path.text
         if not name and not path:
             return
-        self.ids.list_cards.add_widget(TwoLineAvatarIconListItem(
+        directory, filename = os.path.split(path)
+        self.ids.list_cards.add_widget(ThreeLineAvatarIconListItem(
                                                                 IconLeftWidget(
                                                                     icon="database"
                                                                 ),
@@ -45,9 +46,9 @@ class Nav_add_scr(Screen):
                                                                 ),
                                                                 id=self.doc_id,
                                                                 text=name,
-                                                                secondary_text=path,
+                                                                secondary_text=filename,
+                                                                tertiary_text= path,
                                                                 ))
-        self.ids.document_name.text=''
         self.ids.document_path.text=''
     def remove_document(self,item):
         for i in self.ids.list_cards.children:
@@ -62,17 +63,18 @@ class Nav_add_scr(Screen):
         style=self.ids.document_style.text
         color=self.ids.document_color.text
         pi=self.ids.document_pi.text
-        po_qty=self.ids.po_qty.text
-        delivery_qty=self.ids.delivery_qty.text
-        usd=self.ids.usd.text
-        excange_rate=self.ids.excange_rate.text
-        po_value_usd=self.ids.po_value_usd.text
-        delivery_usd=self.ids.delivery_usd.text
-        excess_stock=self.ids.excess_shortage.text
-        inr=self.ids.inr.text
-        percent=self.ids.percent.text
-        value=self.ids.document_value.text
-        if not name and not description and not io and not style and not color and not pi:
+        po_qty= self.ids.po_qty.text if self.ids.po_qty.text else 0.0
+        delivery_qty= self.ids.delivery_qty.text if self.ids.delivery_qty.text else 0.0
+        usd= self.ids.usd.text if self.ids.usd.text else 0.0
+        inr= self.ids.inr.text if self.ids.inr.text else 0.0
+        excange_rate= self.ids.excange_rate.text if self.ids.excange_rate.text else 0.0
+        po_value_usd= self.ids.po_value_usd.text if self.ids.po_value_usd.text else 0.0
+        delivery_usd= self.ids.delivery_usd.text if self.ids.delivery_usd.text else 0.0
+        excess_stock= self.ids.excess_shortage.text if self.ids.excess_shortage.text else 0.0
+        percent= self.ids.percent.text if self.ids.percent.text else 0.0
+        value= self.ids.document_value.text if self.ids.document_value.text else 0.0
+        if not io:
+            self.app.notify(f'please Add io',1)
             return
         try:
             with get_session() as session:
@@ -84,10 +86,9 @@ class Nav_add_scr(Screen):
                     directory, filename = os.path.split(i.secondary_text)
                     img_name, extension = os.path.splitext(filename)
                     if not os.path.exists(f'{self.sys_path_year}/{i.text}'):os.mkdir(f'{self.sys_path_year}/{i.text}')
-                    id=self.app.id_gen()
-                    output=f'{self.sys_path_year}/{i.text}/{x.id}_{id}{extension}'
+                    output=f'{self.sys_path_year}/{i.text}/{x.id}_{filename}{extension}'
                     shutil.copy(i.secondary_text, output)
-                    insert_row(document_child,name=i.text,file=output,document_id=x.id)
+                    insert_row(document_child,name=i.text,filename=filename,file=output,document_id=x.id)
         except Exception as e:
             self.app.notify(f'Error: {e}',1)
             return
@@ -113,7 +114,7 @@ class Nav_add_scr(Screen):
         x=select_all(document_child,document_id=self.doc_temp_id)
         if x:
             for i in x:
-                self.ids.documents_cards.add_widget(TwoLineAvatarIconListItem(
+                self.ids.documents_cards.add_widget(ThreeLineAvatarIconListItem(
                                                                         IconLeftWidget(
                                                                             icon="database"
                                                                         ),
@@ -124,7 +125,8 @@ class Nav_add_scr(Screen):
                                                                         
                                                                         id=str(i.document_id),
                                                                         text=i.name,
-                                                                        secondary_text=i.file,
+                                                                        secondary_text=i.filename,
+                                                                        tertiary_text=i.file,
                                                                         ))
         self.ids.spin.acitve=False
     def document_load(self,*args):
@@ -149,24 +151,10 @@ class Nav_add_scr(Screen):
             self.app.notify(f'Error: {e}',1)
         self.ids.spin.acitve=False
     def cancel_document(self,*args):
-        self.ids.name.text=''
-        self.ids.document_description.text=''
-        self.ids.document_io.text=''
-        self.ids.document_style.text=''
-        self.ids.document_color.text=''
-        self.ids.document_pi.text=''
-        self.ids.document_value.text=''
-        self.ids.document_name.text=''
-        self.ids.document_path.text=''
-        self.ids.po_qty.text=''
-        self.ids.delivery_qty.text=''
-        self.ids.usd.text=''
-        self.ids.excange_rate.text=''
-        self.ids.po_value_usd.text=''
-        self.ids.delivery_usd.text=''
-        self.ids.excess_shortage.text=''
-        self.ids.inr.text=''
-        self.ids.percent.text=''
+        for k,v in self.ids.items():
+            if k in ['list_cards','documents_cards','submit_btn','update_btn','cancel_btn']:
+                continue
+            v.text=''
         self.ids.list_cards.clear_widgets()
         self.ids.documents_cards.clear_widgets()
         self.ids.submit_btn.disabled=False
@@ -175,7 +163,7 @@ class Nav_add_scr(Screen):
     def document_menu(self,*args):
         menu_items = [
             {
-                "text": f"Item {i.name}",
+                "text": f"{i.name}",
                 "viewclass": "OneLineListItem",
                 "on_release": lambda x=i.name: self.menu_callback(x),
             } for i in select_all(document_name)
@@ -224,7 +212,7 @@ class Nav_add_scr(Screen):
         x=select_all(document_child,document_id=data.id_data)
         if x:
             for i in x:
-                self.ids.documents_cards.add_widget(TwoLineAvatarIconListItem(
+                self.ids.documents_cards.add_widget(ThreeLineAvatarIconListItem(
                                                                         IconLeftWidget(
                                                                             icon="database"
                                                                         ),
@@ -236,7 +224,8 @@ class Nav_add_scr(Screen):
                                                                         
                                                                         id=str(i.document_id),
                                                                         text=i.name,
-                                                                        secondary_text=i.file,
+                                                                        secondary_text=i.filename,
+                                                                        tertiary_text=i.file,
                                                                         ))
         self.ids.name.text=data.name
         self.ids.document_description.text=data.desc
@@ -274,7 +263,7 @@ class Nav_add_scr(Screen):
     def document_update(self,*args):
         self.ids.spin.acitve=True
         if not self.ids.documents_cards.children:
-            print('no document list')
+            self.app.notify(f'No Update previes data',1)
             return
         id=self.ids.documents_cards.children[::-1][0].id_data
         name=self.ids.name.text
@@ -283,46 +272,48 @@ class Nav_add_scr(Screen):
         style=self.ids.document_style.text
         color=self.ids.document_color.text
         pi=self.ids.document_pi.text
-        po_qty=self.ids.po_qty.text
-        delivery_qty=self.ids.delivery_qty.text
-        usd=self.ids.usd.text if self.ids.usd.text !='' else '0'
-        excange_rate=self.ids.excange_rate.text
-        po_value_usd=self.ids.po_value_usd.text
-        delivery_usd=self.ids.delivery_usd.text
-        excess_shortage=self.ids.excess_shortage.text
-        inr=self.ids.inr.text if self.ids.inr.text !='' else '0'
-        percent=self.ids.percent.text
-        value=self.ids.document_value.text
-        if name and description and io and style and color and  pi and value:
-            data={
-                'name':name,
-                'description':description,
-                'io':io,
-                'style':style,
-                'color':color,
-                'pi':pi,
-                'value':value,
-                'po_qty':float(po_qty),
-                'delivery_qty':float(delivery_qty),
-                'usd':float(usd),
-                'po_value_usd':float(po_value_usd),
-                'delivery_usd':float(delivery_usd),
-                'excange_rate':float(excange_rate),
-                'excess_stock':float(excess_shortage),
-                'inr':float(inr),
-                'percent':float(percent),
-            }
-            update_row(document,{'id':id},data)
+        po_qty= self.ids.po_qty.text if self.ids.po_qty.text else 0.0
+        delivery_qty= self.ids.delivery_qty.text if self.ids.delivery_qty.text else 0.0
+        usd= self.ids.usd.text if self.ids.usd.text else 0.0
+        inr= self.ids.inr.text if self.ids.inr.text else 0.0
+        excange_rate= self.ids.excange_rate.text if self.ids.excange_rate.text else 0.0
+        po_value_usd= self.ids.po_value_usd.text if self.ids.po_value_usd.text else 0.0
+        delivery_usd= self.ids.delivery_usd.text if self.ids.delivery_usd.text else 0.0
+        excess_shortage= self.ids.excess_shortage.text if self.ids.excess_shortage.text else 0.0
+        percent= self.ids.percent.text if self.ids.percent.text else 0.0
+        value= self.ids.document_value.text if self.ids.document_value.text else 0.0
+        if not io:
+            self.app.notify(f'please Add io',1)
+            return
+        data={
+            'name':name,
+            'description':description,
+            'io':io,
+            'style':style,
+            'color':color,
+            'pi':pi,
+            'po_qty':float(po_qty),
+            'delivery_qty':float(delivery_qty),
+            'usd':float(usd),
+            'po_value_usd':float(po_value_usd),
+            'delivery_usd':float(delivery_usd),
+            'excange_rate':float(excange_rate),
+            'excess_stock':float(excess_shortage),
+            'inr':float(inr),
+            'percent':float(percent),
+            'value':value,
+        
+        }
+        update_row(document,{'id':id},data)
         if self.ids.list_cards.children:
             try:
                 for i in self.ids.list_cards.children:
                     directory, filename = os.path.split(i.secondary_text)
                     img_name, extension = os.path.splitext(filename)
                     if not os.path.exists(f'{self.sys_path_year}/{i.text}'):os.mkdir(f'{self.sys_path_year}/{i.text}')
-                    id_token=self.app.id_gen()
-                    output=f'{self.sys_path_year}/{i.text}/{id}_{id_token}{extension}'
+                    output=f'{self.sys_path_year}/{i.text}/{id}_{filename}{extension}'
                     shutil.copy(i.secondary_text, output)
-                    insert_row(document_child,name=i.text,file=output,document_id=id)
+                    insert_row(document_child,name=i.text,filename=filename,file=output,document_id=id)
             except Exception as e:
                 self.app.notify(f'Error: {e}',1)
                 return
@@ -349,7 +340,7 @@ class Nav_add_scr(Screen):
         x=select_all(document_child,document_id=id)
         if x:
             for i in x:
-                self.ids.documents_cards.add_widget(TwoLineAvatarIconListItem(
+                self.ids.documents_cards.add_widget(ThreeLineAvatarIconListItem(
                                                                         IconLeftWidget(
                                                                             icon="database"
                                                                         ),
@@ -361,7 +352,8 @@ class Nav_add_scr(Screen):
                                                                         
                                                                         id=str(i.document_id),
                                                                         text=i.name,
-                                                                        secondary_text=i.file,
+                                                                        secondary_text=i.filename,
+                                                                        tertiary_text=i.file,
                                                                         ))
         self.ids.name.text=data['name']
         self.ids.document_description.text=data['description']
@@ -373,50 +365,45 @@ class Nav_add_scr(Screen):
         self.ids.spin.acitve=False
     def usd_calc(self,*args):
         try:
-            if args[0]=='':
+            if not args[0]:
                 self.ids.po_value_usd.text=''
                 self.ids.delivery_usd.text=''
                 self.ids.excess_shortage.text=''
                 self.ids.percent.text=''
-                self.ids.document_value.text
+                self.ids.document_value.text=''
                 return
-            po_qty=self.ids.po_qty.text
-            delivery_qty=self.ids.delivery_qty.text
+            po_qty= self.ids.po_qty.text if self.ids.po_qty.text else 0.0
+            delivery_qty=self.ids.delivery_qty.text if self.ids.delivery_qty.text else 0.0
             usd=self.ids.usd.text
             inr=self.ids.inr.text
-
-            if po_qty=='':
-                po_qty=0
-            if delivery_qty=='':
-                delivery_qty=0
-            if inr=='' and usd=='':
-                Clock.schedule_once(partial(self.app.notify,f'Inr and Usd is empty'),1)
-            elif usd=='' or usd=='0.0' or usd=='0':
+            if not inr and not usd:
+                Clock.schedule_once(partial(self.app.notify,f'Inr and Usd not Value '),1)
+            elif not usd or usd=='0.0' or usd=='0':
                 po_value=float(po_qty)*float(inr)
                 delivery_value=float(delivery_qty)*float(inr)
                 self.ids.po_value_usd.text=f'{po_value:.2f}'
                 self.ids.delivery_usd.text=f'{delivery_value:.2f}'
-            else:
+            elif not inr or inr=='0.0' or inr=='0':
                 po_value=float(po_qty)*float(usd)*float(args[0])
                 delivery_value=float(delivery_qty)*float(usd)*float(args[0])
                 self.ids.po_value_usd.text=f'{po_value:.2f}'
                 self.ids.delivery_usd.text=f'{delivery_value:.2f}'
+            else:
+                Clock.schedule_once(partial(self.app.notify,f'po value and delivery value not calculated '),1)
             excess_shortage=float(delivery_qty)-float(po_qty)
             self.ids.excess_shortage.text=f'{excess_shortage:.0f}'
             Clock.schedule_once(partial(self.inr_value_calc,args[0]),0.5)
         except Exception as e:
-            Clock.schedule_once(partial(self.app.notify,f'Usd or Inr error in usd_calc{e} '),1)
+            Clock.schedule_once(partial(self.app.notify,f'usd_calc error:{e} '),1)
 
     def inr_value_calc(self,*args):
         try:
-            if args[0]=='':
-                self.ids.document_value.text=''
+            if not args[0]:
+                self.ids.document_value.text='0'
                 return
-            delivery_usd=self.ids.delivery_usd.text
-            excess_shortage=self.ids.excess_shortage.text
-            po_qty=self.ids.po_qty.text
-            if delivery_usd=='':
-                delivery_usd=0
+            delivery_usd=self.ids.delivery_usd.text if self.ids.delivery_usd.text else 0.0
+            excess_shortage=self.ids.excess_shortage.text if self.ids.excess_shortage.text else 0.0
+            po_qty=self.ids.po_qty.text if self.ids.po_qty.text else 0.0
             percent=(float(excess_shortage)/float(po_qty))*100
             value=float(delivery_usd)*1.05
             self.ids.percent.text=f'{percent:.0f}'

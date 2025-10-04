@@ -54,6 +54,7 @@ class document_child(Base):
     __tablename__ = 'document_child'
     id = Column(Integer, primary_key=True,index=True,autoincrement=True)
     name=Column(String(255))
+    filename=Column(String(255))
     file=Column(String(255))
     document_id=Column(Integer,ForeignKey('document.id'))
     document=relationship('document',back_populates='document_child')

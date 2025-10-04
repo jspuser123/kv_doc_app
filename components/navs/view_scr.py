@@ -1,5 +1,5 @@
 from kivy.uix.screenmanager import Screen
-from components.wgt import MDApp,Builder,Clock,partial,ObjectProperty,platform,os,Items_Card,Animation,TwoLineAvatarIconListItem,IconLeftWidget,IconRightWidget,webbrowser
+from components.wgt import MDApp,Builder,Clock,partial,ObjectProperty,platform,os,Items_Card,Animation,ThreeLineAvatarIconListItem,IconLeftWidget,IconRightWidget,webbrowser
 # from components.tabs.add.tab_1 import Tab_company
 from models.model import document_name,document,document_child
 from models.db_con import *
@@ -30,7 +30,7 @@ class Nav_view_scr(Screen):
         x=select_all(document_child,document_id=x.id_data)
         if x:
             for i in x:
-                self.ids.view_cards.add_widget(TwoLineAvatarIconListItem(
+                self.ids.view_cards.add_widget(ThreeLineAvatarIconListItem(
                                                                         IconLeftWidget(
                                                                             icon="database"
                                                                         ),
@@ -41,7 +41,8 @@ class Nav_view_scr(Screen):
                                                                         
                                                                         id=str(i.document_id),
                                                                         text=i.name,
-                                                                        secondary_text=i.file,
+                                                                        secondary_text=i.filename,
+                                                                        tertiary_text=i.file,
                                                                         ))
     def document_load(self,*args):
         print(args)

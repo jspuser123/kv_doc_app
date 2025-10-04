@@ -186,11 +186,10 @@
     Lyt:
         MDLabel:
             text:root.io
-            font_size:'16sp'
-            color: app.theme_cls.opposite_bg_light
-            bold:True
+            font_size:'26sp'
             halign:'left'
-            pos_hint:{'center_y':.5}
+            bold:True
+            pos_hint:{'center_y':.9}
         MDLabel:
             text:'IO'
             font_size:'16sp'
@@ -201,7 +200,7 @@
         MDLabel:
             text:root.desc
             font_size:'21sp'
-            color: 'grey'
+            color:app.theme_cls.opposite_bg_light
             halign:'left'
             bold:True
             pos_hint:{'center_y':.7}
@@ -214,10 +213,11 @@
             pos_hint:{'center_y':.6}
         MDLabel:
             text:root.name
-            font_size:'26sp'
-            halign:'left'
+            font_size:'16sp'
+            color: '#2254B6'
             bold:True
-            pos_hint:{'center_y':.9}
+            halign:'left'
+            pos_hint:{'center_y':.5}
         MDLabel:
             text:'Invoice No'
             font_size:'16sp'
